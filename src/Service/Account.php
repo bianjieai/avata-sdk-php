@@ -8,7 +8,6 @@
 namespace Bianjieai\AvataSdkPhp\Service;
 
 
-use Bianjieai\AvataSdkPhp\Exception\InvalidArgumentException;
 use Bianjieai\AvataSdkPhp\Models\Account\BatchCreateAccountsReq;
 use Bianjieai\AvataSdkPhp\Models\Account\CreateAccountsReq;
 use Bianjieai\AvataSdkPhp\Models\Account\QueryAccountReq;
@@ -16,7 +15,6 @@ use Bianjieai\AvataSdkPhp\Models\ExceptionRes;
 use Bianjieai\AvataSdkPhp\Models\BaseResponse;
 use Bianjieai\AvataSdkPhp\Models\HttpRes;
 use Bianjieai\AvataSdkPhp\Utils\Utils;
-use GuzzleHttp\Exception\ClientException;
 
 
 final class Account extends Base

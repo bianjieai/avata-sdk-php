@@ -7,13 +7,14 @@
  */
 namespace Bianjieai\AvataSdkPhp\Utils;
 
-use Bianjieai\AvataSdkPhp\Models\BaseResponse;
-use Bianjieai\AvataSdkPhp\Models\ExceptionRes;
-use Bianjieai\AvataSdkPhp\Models\HttpRes;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use Psr\Http\Message\ResponseInterface;
+
+use Bianjieai\AvataSdkPhp\Models\BaseResponse;
+use Bianjieai\AvataSdkPhp\Models\ExceptionRes;
+use Bianjieai\AvataSdkPhp\Models\HttpRes;
 
 
 final class Utils
@@ -158,7 +159,7 @@ final class Utils
      */
     public static function exceptionHandle(\Throwable $throwable) :BaseResponse
     {
-        $code = -1;
+        $code = BaseResponse::$code_error;
         $message = $throwable->getCode() == 0 ? $throwable->getMessage() : "";
         $error = new ExceptionRes([]);
         $http = new HttpRes(0, "");
