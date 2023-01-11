@@ -7,15 +7,18 @@
  */
 namespace Bianjieai\AvataSdkPhp\Utils;
 
-use Bianjieai\AvataSdkPhp\Response\ExceptionResponse;
-use Bianjieai\AvataSdkPhp\Response\Response;
+use Bianjieai\AvataSdkPhp\Models\BaseResponse;
+use Bianjieai\AvataSdkPhp\Models\ExceptionRes;
+use Bianjieai\AvataSdkPhp\Models\HttpRes;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use Psr\Http\Message\ResponseInterface;
 
 
 final class Utils
 {
+    const ROUTER_PREFIX = "/v1beta1";
     /**
      * @var Client http请求客户端
      */
@@ -42,11 +45,10 @@ final class Utils
         $client = new Client([
             "timeout"         => $cfg["http_timeout"],
             "allow_redirects" => false,
-
         ]);
         self::$apiKey = $cfg["api_key"];
         self::$apiSecret = $cfg["api_secret"];
-        self::$domain = $cfg["domain"];
+        self::$domain = $cfg["domain"].self::ROUTER_PREFIX;
         self::$client = $client;
     }
 
@@ -60,7 +62,7 @@ final class Utils
     public static function httpPost(string $path, array $body)
     {
         $timestamp = self::getMillisecond();
-        $signature = self::signature($path, $timestamp, [], $body);
+        $signature = self::signature(self::ROUTER_PREFIX.$path, $timestamp, [], $body);
         $res = self::$client->post(self::$domain. $path, [
             "headers" => [
                 "X-Api-Key"     => self::$apiKey,
@@ -110,7 +112,7 @@ final class Utils
                 $params["body_$k"] = $v;
             }
         }
-        ksort($params);
+        self::sortAll($params);
         $hexHash = hash("sha256", "$timestamp" . self::$apiSecret);
         if (count($params) > 0) {
             $s = json_encode($params, JSON_UNESCAPED_UNICODE);
@@ -132,22 +134,49 @@ final class Utils
     }
 
     /**
+     * 适配批量操作下数组
+     *
+     * @param array $params
+     */
+    private static function sortAll(array &$params)
+    {
+        if (is_array($params)) {
+            ksort($params);
+        }
+        foreach ($params as &$v){
+            if (is_array($v)) {
+                self::sortAll($v);
+            }
+        }
+    }
+
+    /**
      * 异常处理
      *
-     * @param ClientException $e
-     * @return Response
+     * @param \Throwable $e
+     * @return BaseResponse
      */
-    public static function exceptionHandle(ClientException $e) :Response
+    public static function exceptionHandle(\Throwable $throwable) :BaseResponse
     {
-        $code = $e->getResponse()->getStatusCode();
-        $message = $e->getResponse()->getReasonPhrase();
-        $response = new Response($code, $message, [], new ExceptionResponse());
-        if ($e->hasResponse()) {
-            $body = $e->getResponse()->getBody();
-            $stringBody = (string) $body->getContents();
-            $res = json_decode($stringBody, true);
-            $response->setError(new ExceptionResponse($res["error"]));
+        $code = -1;
+        $message = $throwable->getCode() == 0 ? $throwable->getMessage() : "";
+        $error = new ExceptionRes([]);
+        $http = new HttpRes(0, "");
+        if ($throwable instanceof ClientException) {
+            $http_code = $throwable->getResponse()->getStatusCode();
+            $http_message = $throwable->getResponse()->getReasonPhrase();
+            $http = new HttpRes($http_code, $http_message);
+            if ($throwable->hasResponse()) {
+                $body = $throwable->getResponse()->getBody();
+                $stringBody = (string) $body->getContents();
+                $res = json_decode($stringBody, true);
+                $error = new ExceptionRes($res["error"]);
+            }
         }
+        if ($throwable instanceof ServerException) {
+            // TODO
+        }
+        $response = new BaseResponse($code, $message, [], $error, $http);
         return $response;
     }
 }

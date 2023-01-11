@@ -7,12 +7,12 @@
  */
 namespace Bianjieai\AvataSdkPhp;
 
-use Bianjieai\AvataSdkPhp\Service\BaseService;
+use Bianjieai\AvataSdkPhp\Service\Base;
 use Bianjieai\AvataSdkPhp\Service\Account;
 use Bianjieai\AvataSdkPhp\Exception\InvalidArgumentException;
 use Bianjieai\AvataSdkPhp\Utils\Utils;
 
-class Client extends BaseService
+class Client extends Base
 {
     /**
      * @请求Avata服务超时时间

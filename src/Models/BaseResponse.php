@@ -6,10 +6,12 @@
  * Email: <Tianyu@bianjie.ai>
  */
 
-namespace Bianjieai\AvataSdkPhp\Response;
+namespace Bianjieai\AvataSdkPhp\Models;
 
-class Response
+class BaseResponse
 {
+    public static $code_success = 0;
+    public static $code_error = -1;
     /**
      * @var int http返回的状态码
      */
@@ -21,28 +23,33 @@ class Response
     private $message;
 
     /**
-     * @var
+     * @var array
      */
     private $data;
 
     /**
-     * @var ExceptionResponse 异常信息
+     * @var ExceptionRes 异常信息
      */
     private $error;
 
     /**
-     * Response constructor.
+     * @var HttpRes http返回的状态码和信息
+     */
+    private $http;
+    /**
+     * BaseResponse constructor.
      * @param int $code
      * @param string $message
      * @param $data
-     * @param ExceptionResponse $error
+     * @param ExceptionRes $error
      */
-    public function __construct(int $code, string $message, $data, ExceptionResponse $error)
+    public function __construct(int $code, string $message, $data = [], ExceptionRes $error = null, HttpRes $http = null)
     {
         $this->code = $code;
         $this->message = $message;
         $this->data = $data;
         $this->error = $error;
+        $this->http = $http;
     }
 
     /**
@@ -73,22 +80,32 @@ class Response
     }
 
     /**
-     * @return ExceptionResponse 获取异常信息
+     * @return ExceptionRes 获取异常信息
      */
-    public function getError() :ExceptionResponse
+    public function getError() :ExceptionRes
     {
         if (is_null($this->error)) {
-            return new ExceptionResponse();
+            return new ExceptionRes();
         }
         return $this->error;
     }
 
     /**
-     * 设置异常信息
-     *
-     * @param ExceptionResponse $exceptionResponse
+     * @return HttpRes 获取 http 信息
      */
-    public function setError(ExceptionResponse $exceptionResponse) {
+    public function getHttp() :HttpRes
+    {
+        if (is_null($this->http)) {
+            return new HttpRes();
+        }
+        return $this->http;
+    }
+
+    /**
+     * @param ExceptionRes $exceptionResponse 设置异常信息
+     */
+    public function setError(ExceptionRes $exceptionResponse)
+    {
         $this->error = $exceptionResponse;
     }
 
@@ -99,5 +116,13 @@ class Response
      */
     public function setData($data) {
         $this->data = $data;
+    }
+
+    /**
+     * @param HttpRes $http 设置http信息
+     */
+    public function setHttp(HttpRes $http)
+    {
+        $this->http = $http;
     }
 }

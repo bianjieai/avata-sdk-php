@@ -10,7 +10,7 @@ namespace Bianjieai\AvataSdkPhp\Service;
 use Bianjieai\AvataSdkPhp\Exception\InvalidArgumentException;
 use GuzzleHttp\Client;
 
-Class BaseService
+Class Base
 {
     /**
      * @var Client http请求客户端

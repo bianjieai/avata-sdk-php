@@ -7,9 +7,7 @@
  */
 namespace Bianjieai\AvataSdkPhp\Service;
 
-use Bianjieai\AvataSdkPhp\BaseService;
-
-class NFT extends BaseService
+class NFT extends Base
 {
 
 }
