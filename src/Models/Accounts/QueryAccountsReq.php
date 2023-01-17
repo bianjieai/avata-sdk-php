@@ -6,12 +6,12 @@
  * Email: <Tianyu@bianjie.ai>
  */
 
-namespace Bianjieai\AvataSdkPhp\Models\Account;
+namespace Bianjieai\AvataSdkPhp\Models\Accounts;
 
 
 use Bianjieai\AvataSdkPhp\Models\BaseRequest;
 
-class QueryAccountReq extends BaseRequest
+class QueryAccountsReq extends BaseRequest
 {
     /**
      * @var string 游标，默认为 0
@@ -49,7 +49,7 @@ class QueryAccountReq extends BaseRequest
     public $sort_by = "";
 
     /**
-     * QueryAccountReq constructor.
+     * QueryAccountsReq constructor.
      * @param array $data
      */
     public function __construct(array $data = [])
@@ -59,8 +59,19 @@ class QueryAccountReq extends BaseRequest
         }
     }
 
+    /**
+     * @return string 转字符串
+     */
     public function toString() :string
     {
-        
+        return http_build_query(array_filter((array)$this), '', '&');
+    }
+
+    /**
+     * @return array 转数组
+     */
+    public function toArray() :array
+    {
+        return array_filter((array)$this);
     }
 }
