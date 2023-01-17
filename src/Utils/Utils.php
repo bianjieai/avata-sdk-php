@@ -77,6 +77,29 @@ final class Utils
     }
 
     /**
+     * GET 请求
+     *
+     * @param string $path
+     * @param array $query
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public static function httpGet(string $path, array $query)
+    {
+        $timestamp = self::getMillisecond();
+        $signature = self::signature(self::ROUTER_PREFIX.$path, $timestamp, $query, []);
+        $res = self::$client->get(self::$domain. $path, [
+            "headers" => [
+                "X-Api-Key"     => self::$apiKey,
+                "X-Timestamp"   => $timestamp,
+                "X-Signature"   => $signature,
+                "Content-Type"  => "application/json",
+            ],
+            "query" => $query
+        ]);
+        return $res;
+    }
+    /**
      * 解析Body参数,返回数据
      *
      * @param ResponseInterface $response
