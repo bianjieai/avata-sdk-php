@@ -8,7 +8,7 @@
 namespace Bianjieai\AvataSdkPhp;
 
 use Bianjieai\AvataSdkPhp\Service\Base;
-use Bianjieai\AvataSdkPhp\Service\Account;
+use Bianjieai\AvataSdkPhp\Service\Accounts;
 use Bianjieai\AvataSdkPhp\Exception\InvalidArgumentException;
 use Bianjieai\AvataSdkPhp\Utils\Utils;
 
@@ -20,14 +20,14 @@ class Client extends Base
     const HTTP_TIMEOUT = 10;
 
     /**
-     * @var Account 链账户服务
+     * @var Accounts 链账户服务
      */
-    public $account;
+    public $accounts;
 
     /**
-     * @var NFT NFT服务
+     * @var NFTS NFT服务
      */
-    public $NFT;
+    public $NFTS;
 
     /**
      * Client constructor
@@ -50,7 +50,7 @@ class Client extends Base
            $cfg["http_timeout"] = self::HTTP_TIMEOUT;
        }
        parent::$http_client = new Utils($cfg);
-       $this->account = new Account();
+       $this->accounts = new Accounts();
        parent::__construct();
    }
 }

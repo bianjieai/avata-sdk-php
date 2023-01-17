@@ -6,7 +6,7 @@
  * Email: <Tianyu@bianjie.ai>
  */
 
-namespace Bianjieai\AvataSdkPhp\Models\Account;
+namespace Bianjieai\AvataSdkPhp\Models\Accounts;
 
 use Bianjieai\AvataSdkPhp\Models\BaseRequest;
 
