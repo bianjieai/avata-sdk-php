@@ -5,6 +5,7 @@
  * Date: 2023/1/9
  * Email: <Tianyu@bianjie.ai>
  */
+
 namespace Bianjieai\AvataSdkPhp\Service;
 
 
@@ -30,7 +31,7 @@ final class Accounts extends Base
      * @param CreateAccountsReq $request
      * @return BaseResponse
      */
-    public function CreateAccount(CreateAccountsReq $request) : BaseResponse
+    public function CreateAccount(CreateAccountsReq $request): BaseResponse
     {
         if ($request->name == "") {
             return new BaseResponse(BaseResponse::$code_error, "name is required");
@@ -41,8 +42,8 @@ final class Accounts extends Base
 
         try {
             $account = Utils::httpPost("/account", [
-                $request->getNameKey()           => $request->name,
-                $request->getOperationIDKey()    => $request->operation_id,
+                $request->getNameKey() => $request->name,
+                $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
             return Utils::exceptionHandle($throwable);
@@ -64,7 +65,7 @@ final class Accounts extends Base
      * @return BaseResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function BatchCreateAccounts(BatchCreateAccountsReq $request) :BaseResponse
+    public function BatchCreateAccounts(BatchCreateAccountsReq $request): BaseResponse
     {
         if ($request->count == 0) {
             $request->count = 1;
@@ -75,8 +76,8 @@ final class Accounts extends Base
 
         try {
             $account = Utils::httpPost("/accounts", [
-                $request->getCountKey()         => $request->count,
-                $request->getOperationIDKey()   => $request->operation_id,
+                $request->getCountKey() => $request->count,
+                $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
             return Utils::exceptionHandle($throwable);
@@ -95,7 +96,7 @@ final class Accounts extends Base
      * @param QueryAccountsReq $request
      * @return BaseResponse
      */
-    public function QueryAccounts(QueryAccountsReq $request) :BaseResponse
+    public function QueryAccounts(QueryAccountsReq $request): BaseResponse
     {
         try {
             $accounts = Utils::httpGet("/accounts", $request->toArray());
@@ -116,7 +117,7 @@ final class Accounts extends Base
      * @param QueryAccountsHistoryReq $request
      * @return BaseResponse
      */
-    public function QueryAccountsHistory(QueryAccountsHistoryReq $request) :BaseResponse
+    public function QueryAccountsHistory(QueryAccountsHistoryReq $request): BaseResponse
     {
         try {
             $accountsHistory = Utils::httpGet("/accounts/history", $request->toArray());

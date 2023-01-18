@@ -34,7 +34,7 @@ class BatchCreateAccountsReq extends BaseRequest
      *
      * @return string
      */
-    public function getCountKey() :string
+    public function getCountKey(): string
     {
         return "count";
     }

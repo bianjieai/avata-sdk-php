@@ -32,7 +32,7 @@ class CreateAccountsReq extends BaseRequest
     /**
      * @return string
      */
-    public function getNameKey() :string
+    public function getNameKey(): string
     {
         return "name";
     }
