@@ -10,6 +10,7 @@ namespace Bianjieai\AvataSdkPhp;
 use Bianjieai\AvataSdkPhp\Service\Base;
 use Bianjieai\AvataSdkPhp\Service\Accounts;
 use Bianjieai\AvataSdkPhp\Exception\InvalidArgumentException;
+use Bianjieai\AvataSdkPhp\Service\NFT_Classes;
 use Bianjieai\AvataSdkPhp\Utils\Utils;
 
 class Client extends Base
@@ -23,6 +24,11 @@ class Client extends Base
      * @var Accounts 链账户服务
      */
     public $accounts;
+
+    /**
+     * @var NFT_Classes NFT类别服务
+     */
+    public $nft_classes;
 
     /**
      * @var NFTS NFT服务
@@ -51,6 +57,7 @@ class Client extends Base
        }
        parent::$http_client = new Utils($cfg);
        $this->accounts = new Accounts();
+       $this->nft_classes = new NFT_Classes();
        parent::__construct();
    }
 }

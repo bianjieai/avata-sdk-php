@@ -40,7 +40,7 @@ final class Accounts extends Base
         }
 
         try {
-            $account = Utils::httpPost("/account", [
+            $account = Utils::HttpPost("/account", [
                 $request->getNameKey()           => $request->name,
                 $request->getOperationIDKey()    => $request->operation_id,
             ]);
@@ -74,7 +74,7 @@ final class Accounts extends Base
         }
 
         try {
-            $account = Utils::httpPost("/accounts", [
+            $account = Utils::HttpPost("/accounts", [
                 $request->getCountKey()         => $request->count,
                 $request->getOperationIDKey()   => $request->operation_id,
             ]);
@@ -98,7 +98,7 @@ final class Accounts extends Base
     public function QueryAccounts(QueryAccountsReq $request) :BaseResponse
     {
         try {
-            $accounts = Utils::httpGet("/accounts", $request->toArray());
+            $accounts = Utils::HttpGet("/accounts", $request->toArray());
         } catch (\Throwable $throwable) {
             return Utils::exceptionHandle($throwable);
         }
@@ -119,7 +119,7 @@ final class Accounts extends Base
     public function QueryAccountsHistory(QueryAccountsHistoryReq $request) :BaseResponse
     {
         try {
-            $accountsHistory = Utils::httpGet("/accounts/history", $request->toArray());
+            $accountsHistory = Utils::HttpGet("/accounts/history", $request->toArray());
         } catch (\Throwable $throwable) {
             return Utils::exceptionHandle($throwable);
         }

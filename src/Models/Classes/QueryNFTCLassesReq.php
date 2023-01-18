@@ -2,34 +2,44 @@
 /**
  *
  * User: yu
- * Date: 2023/1/11
+ * Date: 2023/1/18
  * Email: <Tianyu@bianjie.ai>
  */
 
-namespace Bianjieai\AvataSdkPhp\Models\Accounts;
+namespace Bianjieai\AvataSdkPhp\Models\Classes;
 
 
 use Bianjieai\AvataSdkPhp\Models\BaseRequest;
 
-class QueryAccountsReq extends BaseRequest
+class QueryNFTCLassesReq extends BaseRequest
 {
     /**
-     * @var string 链账户地址
+     * @var string NFT 类别 ID
      */
-    public $account = "";
+    public $id = "";
 
     /**
-     * @var string 链账户名称，支持模糊查询
+     * @var string NFT 类别名称，支持模糊查询
      */
     public $name = "";
 
     /**
-     * @var string 创建日期范围 - 开始，yyyy-MM-dd（UTC 时间）
+     * @var string NFT 类别权属者地址
+     */
+    public $owner = "";
+
+    /**
+     * @var string 创建 NFT 类别的 Tx Hash
+     */
+    public $tx_hash = "";
+
+    /**
+     * @var string NFT 类别创建日期范围 - 开始，yyyy-MM-dd（UTC 时间）
      */
     public $start_date = "";
 
     /**
-     * @var string 创建日期范围 - 结束，yyyy-MM-dd（UTC 时间）
+     * @var string NFT 类别创建日期范围 - 结束，yyyy-MM-dd（UTC 时间）
      */
     public $end_date = "";
 
@@ -39,7 +49,7 @@ class QueryAccountsReq extends BaseRequest
     public $sort_by = "";
 
     /**
-     * QueryAccountsReq constructor.
+     * QueryNFTCLassesReq constructor.
      * @param array $data
      */
     public function __construct(array $data = [])
@@ -47,14 +57,6 @@ class QueryAccountsReq extends BaseRequest
         foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }
-    }
-
-    /**
-     * @return string 转字符串
-     */
-    public function toString() :string
-    {
-        return http_build_query(array_filter((array)$this), '', '&');
     }
 
     /**

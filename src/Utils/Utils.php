@@ -60,7 +60,7 @@ final class Utils
      * @param array $body
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function httpPost(string $path, array $body)
+    public static function HttpPost(string $path, array $body)
     {
         $timestamp = self::getMillisecond();
         $signature = self::signature(self::ROUTER_PREFIX.$path, $timestamp, [], $body);
@@ -84,7 +84,7 @@ final class Utils
      * @return ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function httpGet(string $path, array $query)
+    public static function HttpGet(string $path, array $query)
     {
         $timestamp = self::getMillisecond();
         $signature = self::signature(self::ROUTER_PREFIX.$path, $timestamp, $query, []);
@@ -194,7 +194,15 @@ final class Utils
                 $body = $throwable->getResponse()->getBody();
                 $stringBody = (string) $body->getContents();
                 $res = json_decode($stringBody, true);
-                $error = new ExceptionRes($res["error"]);
+                if (is_null($res)) {
+                    $error = new ExceptionRes([
+                        "code" => 404,
+                        "code_space" => "PHP-SDK",
+                        "message" => $res,
+                    ]);
+                } else {
+                    $error = new ExceptionRes($res["error"]);
+                }
             }
         }
         if ($throwable instanceof ServerException) {
