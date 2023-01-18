@@ -36,7 +36,5 @@ class CreateAccountsReq extends BaseRequest
     {
         return "name";
     }
-
-
 }
 

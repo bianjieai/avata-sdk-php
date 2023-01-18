@@ -14,16 +14,6 @@ use Bianjieai\AvataSdkPhp\Models\BaseRequest;
 class QueryAccountsHistoryReq extends BaseRequest
 {
     /**
-     * @var string 游标，默认为 0
-     */
-    public $offset = "0";
-
-    /**
-     * @var string 每页记录数，默认为 10，上限为 50
-     */
-    public $limit = "10";
-
-    /**
      * @var string 链账户地址
      */
     public $account = "";
