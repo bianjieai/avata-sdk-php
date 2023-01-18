@@ -45,4 +45,36 @@ class IssueMTReq extends BaseRequest
         $this->operation_id = $operation_id;
     }
 
+    /**
+     * @return string
+     */
+    public function getAmountKey(): string
+    {
+        return "amount";
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecipientKey(): string
+    {
+        return "recipient";
+    }
+
+    /**
+     * @return string
+     */
+    public function getDataKey(): string
+    {
+        return "data";
+    }
+
+    /**
+     * @return string
+     */
+    public function getTagKey(): string
+    {
+        return "tag";
+    }
+
 }

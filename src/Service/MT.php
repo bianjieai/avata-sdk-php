@@ -8,6 +8,7 @@ use Bianjieai\AvataSdkPhp\Models\ExceptionRes;
 use Bianjieai\AvataSdkPhp\Models\HttpRes;
 use Bianjieai\AvataSdkPhp\Utils\Utils;
 use CreateMTClassReq;
+use IssueMTReq;
 use TransferMTClassReq;
 
 final class MT extends Base
@@ -83,5 +84,35 @@ final class MT extends Base
         return new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes([]), new HttpRes($account->getStatusCode(), ""));
     }
 
+    /**
+     * 发行 MT
+     *
+     * MT 类别权属者（MT Class Owner）通过调用此接口来发行 MT。单个 MT 的发行数量上限为 2^64-1。
+     *
+     * @param string $classID
+     * @param IssueMTReq $request
+     * @return BaseResponse
+     */
+    public function IssueMT(string $classID, IssueMTReq $request): BaseResponse
+    {
+        if ($request->operation_id == "") {
+            return new BaseResponse(BaseResponse::$code_error, "operation_id is required");
+        }
+
+        try {
+            $account = Utils::httpPost(printf("/mt/mt-issues/%s", $classID), [
+                $request->getRecipientKey() => $request->recipient,
+                $request->getAmountKey() => $request->amount,
+                $request->getDataKey() => $request->data,
+                $request->getTagKey() => $request->tag,
+                $request->getOperationIDKey() => $request->operation_id,
+            ]);
+        } catch (\Throwable $throwable) {
+            return Utils::exceptionHandle($throwable);
+        }
+
+        $data = Utils::formatBody($account);
+        return new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes([]), new HttpRes($account->getStatusCode(), ""));
+    }
 
 }
