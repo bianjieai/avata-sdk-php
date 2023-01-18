@@ -145,3 +145,134 @@ $res = $obj->accounts->QueryAccountsHistory(new QueryAccountsHistoryReq([
 # 以上message, nft_msg, mt_msg具体参数可参考文档
 $accountsHistory = new QueryAccountsHistoryRes($res->getData());
 ```
+
+## 3.NFT 接口
+
+### 3.1 类别接口
+
+#### 3.1.1 创建类别
+
+```php
+# CreateNFTClassesReq 创建NFT类别参数对象, 类型为数组
+# name:								NFT 类别名称, 必填字段
+# class_id:						NFT 类别 ID，仅支持小写字母及数字，以字母开头
+# symbol:							标识
+# description:				描述
+# uri:								链外数据链接
+# uri_hash:						链外数据 Hash
+# data:								自定义链上元数据
+# owner:							NFT 类别权属者地址，拥有在该 NFT 类别中发行 NFT 的权限和转让该 NFT 类别的权限。支持任一 Avata 平台内合法链账户地址, 必填字段
+# tag:									交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, ["key" => "value"]
+# operation_id:				操作ID, 必填字段
+
+
+# $res
+# getData: 获取返回值
+# getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# getError: 获取异常信息
+# getHttp: 获取http异常信息
+$res = $obj->nft_classes->CreateNFTClasses(new CreateNFTClassesReq([
+    "name"  => "PHP-SDK 测试创建类别",
+    "owner"     => "类别拥有者链账户地址",
+    "operation_id" => "<操作ID>"
+]));
+
+# CreateNFTClassesRes 创建NFT类别交易成功返回参数对象
+# operation_id: 操作ID
+$nftClasses = new CreateNFTClassesRes($res->getData());
+```
+
+#### 3.1.2 查询类别列表
+
+```php
+# QueryNFTClasses 查询NFT类别列表参数对象, 类型为数组
+# offset:								游标，默认为 0
+# limit: 								每页记录数，默认为 10，上限为 50
+# id:										NFT 类别 ID
+# name:									NFT 类别名称，支持模糊查询
+# owner:								NFT 类别权属者地址
+# tx_hash:							创建 NFT 类别的 Tx Hash
+# start_date:						NFT 类别创建日期范围 - 开始，yyyy-MM-dd（UTC 时间）
+# end_date:							NFT 类别创建日期范围 - 结束，yyyy-MM-dd（UTC 时间
+# sort_by:							排序规则：DATE_ASC / DATE_DESC
+
+# $res
+# getData: 获取返回值
+# getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# getError: 获取异常信息
+# getHttp: 获取http异常信息
+$res = $obj->nft_classes->QueryNFTClasses(new QueryNFTCLassesReq([
+    "offset" => "0",
+    "limit" => "10",
+]));
+
+# QueryNFTCLassesRes 查询NFT类别列表成功参数对象
+# offset:						游标
+# limit:						每页记录数
+# total_count:			总记录数
+# classes:					类别列表, 类型为数组
+# classes->id:			NFT 类别 ID
+# classes->name:		NFT 类别名称
+# classes->symbol:	NFT 类别标识
+# classes->nft_count: NFT 类别包含的 NFT 总量
+# classes->uri:			链外数据链接
+# classes->owner:		NFT 类别权属者地址
+# classes->tx_hash: 创建 NFT 类别的 Tx Hash
+# classes->timestamp: 创建 NFT 类别的时间戳（UTC 时间）
+$classes = new QueryNFTCLassesRes($res->getData());
+```
+
+#### 3.1.3 查询类别详情
+
+```php
+# QueryNFTClass 查询类别详情对象
+# id:		NFT 类别 ID 必填
+
+# $res
+# getData: 获取返回值
+# getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# getError: 获取异常信息
+# getHttp: 获取http异常信息
+$res = $obj->nft_classes->QueryNFTClass(new QueryNFTClassReq("<id>"));
+
+# QueryNFTClassRes 查询类别详情返回对象
+# id:								NFT 类别 ID
+# name:							NFT 类别名称
+# symbol:						NFT 类别标识
+# description:			NFT 类别描述
+# nft_count:				NFT 类别包含的 NFT 总量
+# uri:							链外数据链接
+# uri_hash:					链外数据 Hash
+# data:							自定义链上元数据
+# owner:						NFT 类别权属者地址
+# tx_hash:					创建 NFT 类别的 Tx Hash
+# timestamp:				创建 NFT 类别的时间戳（UTC 时间）
+$classes = new QueryNFTClassRes($res->getData());
+```
+
+#### 3.1.4 转让类别
+
+```php
+# TransferNFTClassReq 转让类别对象, 类型为数组
+# class_id:					NFT 类别 ID,需要转让的类别ID, 必填字段
+# owner:						NFT 类别权属者地址, 当前类别的权属者, 必填字段
+# recipient:				NFT 类别接收者地址，支持任一 Avata 平台内合法链账户地址, 必填字段
+# operation_id:			操作 ID, 必填字段
+# tag:									交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, ["key" => "value"]
+
+# $res
+# getData: 获取返回值
+# getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# getError: 获取异常信息
+# getHttp: 获取http异常信息
+$res = $obj->nft_classes->TransferNFTClass(new TransferNFTClassReq([
+    "class_id"  => "<class_id>",
+    "owner" => "<owner>",
+    "recipient"=>"<recipient>",
+    "operation_id"=>"<operation_id>"
+]));
+
+# TransferNFTClassRes 转让类别返回的对象
+# operation_id:				操作ID
+$classes = new TransferNFTClassRes($res->getData());
+```
