@@ -1,12 +1,14 @@
 <?php
 
+namespace Bianjieai\AvataSdkPhp\Models\MTs;
+
 class TransferMTRes
 {
     /**
      * 操作ID
      * @var string
      */
-    public string $operation_id = "";
+    public $operation_id = "";
 
     /**
      * TransferMTRes constructor.
@@ -14,8 +16,6 @@ class TransferMTRes
      */
     public function __construct(array $data = [])
     {
-        foreach ($data as $key => $value) {
-            $this->{$key} = $value;
-        }
+        $this->operation_id = $data["operation_id"];
     }
 }
