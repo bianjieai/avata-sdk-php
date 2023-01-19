@@ -29,7 +29,7 @@ class NFT_Classes extends Base
      * @param CreateNFTClassesReq $request
      * @return BaseResponse
      */
-    public function CreateNFTClasses(CreateNFTClassesReq $request) :BaseResponse
+    public function CreateNFTClasses(CreateNFTClassesReq $request): BaseResponse
     {
         if ($request->name == "") {
             return new BaseResponse(BaseResponse::$code_error, "name is required");
@@ -43,7 +43,7 @@ class NFT_Classes extends Base
 
         try {
             $classes = Utils::HttpPost("/nft/classes", $request->toArray());
-        }catch (\Throwable $throwable) {
+        } catch (\Throwable $throwable) {
             return Utils::exceptionHandle($throwable);
         }
         $data = Utils::formatBody($classes);
@@ -59,11 +59,11 @@ class NFT_Classes extends Base
      * @param QueryNFTCLassesReq $request
      * @return BaseResponse
      */
-    public function QueryNFTClasses(QueryNFTCLassesReq $request) :BaseResponse
+    public function QueryNFTClasses(QueryNFTCLassesReq $request): BaseResponse
     {
         try {
             $classes = Utils::HttpGet("/nft/classes", $request->toArray());
-        }catch (\Throwable $throwable) {
+        } catch (\Throwable $throwable) {
             return Utils::exceptionHandle($throwable);
         }
         $data = Utils::formatBody($classes);
@@ -79,14 +79,14 @@ class NFT_Classes extends Base
      * @param QueryNFTClassReq $request
      * @return BaseResponse
      */
-    public function QueryNFTClass(QueryNFTClassReq $request) :BaseResponse
+    public function QueryNFTClass(QueryNFTClassReq $request): BaseResponse
     {
         if ($request->id == "") {
             return new BaseResponse(BaseResponse::$code_error, "id is required");
         }
         try {
             $classes = Utils::HttpGet(sprintf("/nft/classes/%s", $request->id), []);
-        }catch (\Throwable $throwable) {
+        } catch (\Throwable $throwable) {
             return Utils::exceptionHandle($throwable);
         }
         $data = Utils::formatBody($classes);
@@ -103,7 +103,7 @@ class NFT_Classes extends Base
      * @param TransferNFTClassReq $request
      * @return BaseResponse
      */
-    public function TransferNFTClass(TransferNFTClassReq $request) :BaseResponse
+    public function TransferNFTClass(TransferNFTClassReq $request): BaseResponse
     {
         if ($request->class_id == "") {
             return new BaseResponse(BaseResponse::$code_error, "class_id is required");
@@ -119,14 +119,14 @@ class NFT_Classes extends Base
         }
         try {
             $body = [
-                $request->getRecipientKey()    => $request->recipient,
-                $request->getOperationIDKey()  => $request->operation_id,
+                $request->getRecipientKey() => $request->recipient,
+                $request->getOperationIDKey() => $request->operation_id,
             ];
             if (count($request->tag) > 1) {
                 $body[$request->getTagKey()] = $request->tag;
             }
             $classes = Utils::HttpPost(sprintf("/nft/class-transfers/%s/%s", $request->class_id, $request->owner), $body);
-        }catch (\Throwable $throwable) {
+        } catch (\Throwable $throwable) {
             return Utils::exceptionHandle($throwable);
         }
         $data = Utils::formatBody($classes);

@@ -9,7 +9,6 @@
 namespace Bianjieai\AvataSdkPhp\Models\Accounts;
 
 
-
 class QueryAccountsRes
 {
     /**
@@ -44,7 +43,7 @@ class QueryAccountsRes
      */
     public function __construct(array $data = [])
     {
-        foreach($data as $key => $value){
+        foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }
     }

@@ -51,7 +51,7 @@ class TransferNFTClassReq extends BaseRequest
     /**
      * @return string
      */
-    public function getRecipientKey() :string
+    public function getRecipientKey(): string
     {
         return "recipient";
     }
@@ -59,7 +59,7 @@ class TransferNFTClassReq extends BaseRequest
     /**
      * @return string
      */
-    public function getTagKey() :string
+    public function getTagKey(): string
     {
         return "tag";
     }

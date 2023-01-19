@@ -1,39 +1,25 @@
 <?php
-/**
- *
- * User: yu
- * Date: 2023/1/17
- * Email: <Tianyu@bianjie.ai>
- */
 
-namespace Bianjieai\AvataSdkPhp\Models\Accounts;
-
+namespace Bianjieai\AvataSdkPhp\Models\MTs;
 
 use Bianjieai\AvataSdkPhp\Models\BaseRequest;
 
-class QueryAccountsHistoryReq extends BaseRequest
+class QueryMTHistoryReq extends BaseRequest
 {
     /**
-     * @var string 链账户地址
+     * @var string Tx 签名者地址
      */
-    public $account = "";
+    public $signer = "";
 
     /**
-     * @var string 功能模块, Enum: "nft" "mt"
-     */
-    public $module = "";
-
-    /**
-     * @var string 操作类型，仅 module 不为空时有效，默认为 "all"。
-     * module = nft 时，可选：issue_class / transfer_class / mint / edit / transfer / burn；
-     * module = mt 时，可选： issue_class / transfer_class / issue / mint / edit / transfer / burn
-     */
-    public $operation = "";
-
-    /**
-     * @var string Tx Hash
+     * @var string MT 操作 Tx Hash
      */
     public $tx_hash = "";
+
+    /**
+     * @var string 操作类型，issue(首发MT) / mint(增发MT) / edit(编辑MT) / transfer(转让MT) / burn(销毁MT)
+     */
+    public $operation = "";
 
     /**
      * @var string 日期范围 - 开始，yyyy-MM-dd（UTC 时间）
@@ -51,7 +37,7 @@ class QueryAccountsHistoryReq extends BaseRequest
     public $sort_by = "";
 
     /**
-     * QueryAccountsHistoryReq constructor.
+     * QueryMTHistoryReq constructor.
      * @param array $data
      */
     public function __construct(array $data = [])

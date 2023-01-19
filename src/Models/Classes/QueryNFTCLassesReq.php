@@ -62,7 +62,7 @@ class QueryNFTCLassesReq extends BaseRequest
     /**
      * @return array 转数组
      */
-    public function toArray() :array
+    public function toArray(): array
     {
         return array_filter((array)$this);
     }

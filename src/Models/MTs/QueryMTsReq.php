@@ -1,27 +1,30 @@
 <?php
-/**
- *
- * User: yu
- * Date: 2023/1/11
- * Email: <Tianyu@bianjie.ai>
- */
 
-namespace Bianjieai\AvataSdkPhp\Models\Accounts;
-
+namespace Bianjieai\AvataSdkPhp\Models\MTs;
 
 use Bianjieai\AvataSdkPhp\Models\BaseRequest;
 
-class QueryAccountsReq extends BaseRequest
+class QueryMTsReq extends BaseRequest
 {
     /**
-     * @var string 链账户地址
+     * @var string MT ID
      */
-    public $account = "";
+    public $id = "";
 
     /**
-     * @var string 链账户名称，支持模糊查询
+     * @var string MT 类别 ID
      */
-    public $name = "";
+    public $class_id = "";
+
+    /**
+     * @var string MT 发行者地址
+     */
+    public $issuer = "";
+
+    /**
+     * @var string 创建 MT 的 Tx Hash
+     */
+    public $tx_hash = "";
 
     /**
      * @var string 创建日期范围 - 开始，yyyy-MM-dd（UTC 时间）
@@ -39,7 +42,7 @@ class QueryAccountsReq extends BaseRequest
     public $sort_by = "";
 
     /**
-     * QueryAccountsReq constructor.
+     * QueryMTsReq constructor.
      * @param array $data
      */
     public function __construct(array $data = [])

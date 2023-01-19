@@ -32,7 +32,7 @@ class ExceptionRes
      */
     public function __construct(array $errors = [])
     {
-        foreach($errors as $key => $value){
+        foreach ($errors as $key => $value) {
             $this->{$key} = $value;
         }
     }
@@ -40,7 +40,7 @@ class ExceptionRes
     /**
      * @return string 返回Code
      */
-    public function getCode() :string
+    public function getCode(): string
     {
         return $this->code;
     }
@@ -48,7 +48,7 @@ class ExceptionRes
     /**
      * @return string 返回CodeSpace
      */
-    public function getCodeSpace() :string
+    public function getCodeSpace(): string
     {
         return $this->code_space;
     }
@@ -56,7 +56,7 @@ class ExceptionRes
     /**
      * @return string 返回Message
      */
-    public function getMessage() :string
+    public function getMessage(): string
     {
         return $this->message;
     }
