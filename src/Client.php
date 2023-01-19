@@ -38,9 +38,9 @@ class Client extends Base
     public $NFTS;
 
     /**
-     * @var MTS MT服务
+     * @var mts MT服务
      */
-    public $MTS;
+    public $mts;
 
     /**
      * Client constructor
@@ -65,7 +65,7 @@ class Client extends Base
         parent::$http_client = new Utils($cfg);
         $this->accounts = new Accounts();
         $this->nft_classes = new NFT_Classes();
-        $this->MTS = new MT();
+        $this->mts = new MT();
         parent::__construct();
     }
 }
