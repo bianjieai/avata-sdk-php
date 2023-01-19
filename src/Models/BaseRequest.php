@@ -23,7 +23,7 @@ class BaseRequest
     /**
      * @var string 操作ID
      */
-    public string $operation_id;
+    public $operation_id;
 
 
     /**
