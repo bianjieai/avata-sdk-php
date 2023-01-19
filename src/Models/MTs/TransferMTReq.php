@@ -13,7 +13,7 @@ class TransferMTReq extends BaseRequest
     public $amount;
 
     /**
-     * MT 类别接收者地址，支持任一 Avata 内合法链账户地址
+     * MT 接收者地址，支持任一 Avata 内合法链账户地址
      * @var string
      */
     public $recipient;
