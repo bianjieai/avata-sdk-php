@@ -25,7 +25,6 @@ class BaseRequest
      */
     public $operation_id;
 
-
     /**
      * @return string
      */

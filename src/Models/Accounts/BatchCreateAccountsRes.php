@@ -9,7 +9,7 @@
 namespace Bianjieai\AvataSdkPhp\Models\Accounts;
 
 
-class BatchCreateAccountRes
+class BatchCreateAccountsRes
 {
     const _ACCOUNTS = "accounts";
     const _OPERATION_ID = "operation_id";
@@ -26,7 +26,7 @@ class BatchCreateAccountRes
     public $operation_id = "";
 
     /**
-     * BatchCreateAccountRes constructor.
+     * BatchCreateAccountsRes constructor.
      * @param array $account
      * @param string $operation_id
      */

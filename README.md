@@ -28,17 +28,17 @@ $obj = new Client($cfg);
 # operation_id: 操作 ID，保证幂等性，避免重复请求，保证对于同一操作发起的一次请求或者多次请求的结果是一致的；由接入方生成的针对每个 Project ID 唯一的、不超过 64 个大小写字母、数字、-、下划线的字符串组成。此操作 ID 仅限在查询链账户接口中使用，用于查询创建链账户的授权状态。
 
 # $res
-# getData: 获取返回值
-# getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# getError: 获取异常信息
-# getHttp: 获取http异常信息
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
 $res = $obj->accounts->CreateAccount(new CreateAccountsReq(<name>, <operation_id>));
 
 # CreateAccountsRes 创建链账户成功返回的参数对象
 # account: 链账户地址
 # name: 链账户名称
 # operation_id: 操作 ID。此操作 ID 仅限在查询链账户接口中使用，用于查询创建链账户的授权状态
-$account = new CreateAccountsRes($res->getData());
+$account = new CreateAccountsRes($res->$res->getData());
 ```
 
 ### 2.2 批量创建链账户
@@ -50,16 +50,16 @@ $account = new CreateAccountsRes($res->getData());
 # operation_id: 操作 ID，保证幂等性，避免重复请求，保证对于同一操作发起的一次请求或者多次请求的结果是一致的；由接入方生成的针对每个 Project ID 唯一的、不超过 64 个大小写字母、数字、-、下划线的字符串组成。此操作 ID 仅限在查询链账户接口中使用，用于查询创建链账户的授权状态。
 
 # $res
-# getData: 获取返回值
-# getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# getError: 获取异常信息
-# getHttp: 获取http异常信息
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
 $res = $obj->accounts->BatchCreateAccounts(new BatchCreateAccountsReq(<count>, <operation_id>));
 
-# BatchCreateAccountRes 批量创建链账户成功返回的参数对象
+# BatchCreateAccountsRes 批量创建链账户成功返回的参数对象
 # accounts: 链账户地址列表, 数组
 # operation_id: 操作 ID。此操作 ID 仅限在查询链账户接口中使用，用于查询创建链账户的授权状态
-$accounts = new BatchCreateAccountRes($res->getData());
+$accounts = new BatchCreateAccountRes($res->$res->getData());
 ```
 
 ### 2.3 查询链账户
@@ -77,10 +77,10 @@ $accounts = new BatchCreateAccountRes($res->getData());
 # 以上参数类型都为String, 如写入其他类型，可能会导致签名参数验证不通过
 
 # $res
-# getData: 获取返回值
-# getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# getError: 获取异常信息
-# getHttp: 获取http异常信息
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
 $res = $obj->accounts->QueryAccounts(new QueryAccountsReq([
     "offset" =>     "0",
     "limit" =>      "10",
@@ -97,7 +97,7 @@ $res = $obj->accounts->QueryAccounts(new QueryAccountsReq([
 # accounts->biz_fee: 文昌链 DDC 业务费余额，单位：分
 # accounts->operation_id: 操作 ID
 # accounts->status: 链账户的授权状态，0 未授权；1 已授权。链账户授权成功后，可使用该链账户地址发起上链交易请求；未授权时不影响作为交易的接受者地址进行使用（DDC 业务除外）
-$accounts = new QueryAccountsRes($res->getData());
+$accounts = new QueryAccountsRes($res->$res->getData());
 ```
 
 ### 2.4 查询链账户操作记录
@@ -118,10 +118,10 @@ $accounts = new QueryAccountsRes($res->getData());
 # 以上参数类型都为String, 如写入其他类型，可能会导致签名参数验证不通过
 
 # $res
-# getData: 获取返回值
-# getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# getError: 获取异常信息
-# getHttp: 获取http异常信息
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
 $res = $obj->accounts->QueryAccountsHistory(new QueryAccountsHistoryReq([
     "offset" =>     "0",
     "limit" =>      "10",
@@ -143,7 +143,7 @@ $res = $obj->accounts->QueryAccountsHistory(new QueryAccountsHistoryReq([
 # operation_records->nft_msg: 对应不同操作类型的消息体,下方的Key只作为展示用, 实际返回中不存在该Key, 只返回对应数据
 # operation_records->mt_msg: 对应不同操作类型的消息体,下方的Key只作为展示用, 实际返回中不存在该Key, 只返回对应数据
 # 以上message, nft_msg, mt_msg具体参数可参考文档
-$accountsHistory = new QueryAccountsHistoryRes($res->getData());
+$accountsHistory = new QueryAccountsHistoryRes($res->$res->getData());
 ```
 
 ## 3.NFT 接口
@@ -167,10 +167,10 @@ $accountsHistory = new QueryAccountsHistoryRes($res->getData());
 
 
 # $res
-# getData: 获取返回值
-# getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# getError: 获取异常信息
-# getHttp: 获取http异常信息
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
 $res = $obj->nft_classes->CreateNFTClasses(new CreateNFTClassesReq([
     "name"  => "PHP-SDK 测试创建类别",
     "owner"     => "类别拥有者链账户地址",
@@ -179,7 +179,7 @@ $res = $obj->nft_classes->CreateNFTClasses(new CreateNFTClassesReq([
 
 # CreateNFTClassesRes 创建NFT类别交易成功返回参数对象
 # operation_id: 操作ID
-$nftClasses = new CreateNFTClassesRes($res->getData());
+$nftClasses = new CreateNFTClassesRes($res->$res->getData());
 ```
 
 #### 3.1.2 查询类别列表
@@ -197,10 +197,10 @@ $nftClasses = new CreateNFTClassesRes($res->getData());
 # sort_by:							排序规则：DATE_ASC / DATE_DESC
 
 # $res
-# getData: 获取返回值
-# getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# getError: 获取异常信息
-# getHttp: 获取http异常信息
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
 $res = $obj->nft_classes->QueryNFTClasses(new QueryNFTCLassesReq([
     "offset" => "0",
     "limit" => "10",
@@ -219,7 +219,7 @@ $res = $obj->nft_classes->QueryNFTClasses(new QueryNFTCLassesReq([
 # classes->owner:		NFT 类别权属者地址
 # classes->tx_hash: 创建 NFT 类别的 Tx Hash
 # classes->timestamp: 创建 NFT 类别的时间戳（UTC 时间）
-$classes = new QueryNFTCLassesRes($res->getData());
+$classes = new QueryNFTCLassesRes($res->$res->getData());
 ```
 
 #### 3.1.3 查询类别详情
@@ -229,10 +229,10 @@ $classes = new QueryNFTCLassesRes($res->getData());
 # id:		NFT 类别 ID 必填
 
 # $res
-# getData: 获取返回值
-# getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# getError: 获取异常信息
-# getHttp: 获取http异常信息
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
 $res = $obj->nft_classes->QueryNFTClass(new QueryNFTClassReq("<id>"));
 
 # QueryNFTClassRes 查询类别详情返回对象
@@ -247,7 +247,7 @@ $res = $obj->nft_classes->QueryNFTClass(new QueryNFTClassReq("<id>"));
 # owner:						NFT 类别权属者地址
 # tx_hash:					创建 NFT 类别的 Tx Hash
 # timestamp:				创建 NFT 类别的时间戳（UTC 时间）
-$classes = new QueryNFTClassRes($res->getData());
+$classes = new QueryNFTClassRes($res->$res->getData());
 ```
 
 #### 3.1.4 转让类别
@@ -261,10 +261,10 @@ $classes = new QueryNFTClassRes($res->getData());
 # tag:									交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, ["key" => "value"]
 
 # $res
-# getData: 获取返回值
-# getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# getError: 获取异常信息
-# getHttp: 获取http异常信息
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
 $res = $obj->nft_classes->TransferNFTClass(new TransferNFTClassReq([
     "class_id"  => "<class_id>",
     "owner" => "<owner>",
@@ -274,5 +274,348 @@ $res = $obj->nft_classes->TransferNFTClass(new TransferNFTClassReq([
 
 # TransferNFTClassRes 转让类别返回的对象
 # operation_id:				操作ID
-$classes = new TransferNFTClassRes($res->getData());
+$classes = new TransferNFTClassRes($res->$res->getData());
 ```
+
+### 3.2 NFT 接口
+
+#### 3.2.1 发行NFT
+
+```php
+# CreateNFTReq 发行NFT对象参数, 类型为数组
+# class_id:								NFT类别ID, 必填参数
+# name:										NFT 名称, 必填参数
+# uri:										链外数据链接
+# uri_hash:								链外数据 Hash
+# data:										自定义链上元数据
+# recipient:							NFT 接收者地址，支持任一文昌链合法链账户地址，默认为 NFT 类别的权属者地址，不填写该参数，默认该NFT接收者为类别的拥有者
+# tag: 										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
+# operation_id:						操作ID, 必填参数
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->nfts->CreateNFT(new CreateNFTReq([
+    "class_id"  => "<类别ID>",
+    "name"  => "<NFT 名称>",
+    "operation_id" => "<操作ID>",
+]));
+
+# CreateNFTRes 发行NFT成功返回对象
+# operation_id:				操作ID
+$nft = new CreateNFTRes($res->$res->getData());
+```
+
+#### 3.2.2 转让NFT
+
+```php
+# TransferNFTReq 转让NFT对象参数, 类型为数组
+# class_id:								NFT 类别 ID, 必填参数
+# owner:									NFT 持有者地址, 必填参数
+# nft_id:									NFT ID, 必填参数
+# recipient:							NFT 接收者地址, 必填参数
+# operation_id:						操作 ID, 必填参数
+# tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->nfts->TransferNFT(new TransferNFTReq([]));
+
+# TransferNFTRes	转让NFT成功返回对象
+# operation_id:				操作ID
+$nft = new TransferNFTRes($res->$res->getData());
+```
+
+#### 3.2.3 编辑NFT
+
+```php
+# EditNFTReq 编辑NFT对象参数, 类型为数组
+# class_id:								NFT 类别 ID, 必填参数
+# owner:									NFT 持有者地址, 必填参数
+# nft_id:									NFT ID, 必填参数
+# name:										NFT 名称, 必填参数
+# uri:										链外数据链接
+# data:										自定义链上元数据
+# operation_id:						操作 ID, 必填参数
+# tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->nfts->EditNFT(new EditNFTReq([]));
+
+# EditNFTRes	编辑NFT成功返回对象
+# operation_id:				操作ID
+$nft = new EditNFTRes($res->$res->getData());
+```
+
+#### 3.2.4 销毁NFT
+
+```php
+# DeleteNFTReq 销毁NFT对象参数, 类型为数组
+# class_id:								NFT 类别 ID, 必填参数
+# owner:									NFT 持有者地址, 必填参数
+# nft_id:									NFT ID, 必填参数
+# operation_id:						操作 ID, 必填参数
+# tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->nfts->DeleteNFT(new DeleteNFTReq([]));
+
+# DeleteNFTRes	销毁NFT成功返回对象
+# operation_id:				操作ID
+$nft = new DeleteNFTRes($res->$res->getData());
+```
+
+#### 3.2.5 批量发行NFT
+
+```php
+# BatchCreateNFTReq 批量发行NFT对象参数, 类型为数组
+# class_id:								NFT 类别 ID, 必填参数
+# name:										NFT 名称, 必填参数
+# operation_id:						操作 ID, 必填参数
+# tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
+# recipients:							NFT 接收者地址和发行数量。以数组的方式进行组合，可以自定义多个组合，可面向多地址批量发行 NFT, 数组, [["amount" => <发行数量>, "recipient" => "<接收者地址>"]], 具体可参考接口文档 必填参数
+# uri:										链外数据链接
+# uri_hash:								链外数据 Hash
+# data:										自定义链上元数据
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->nfts->BatchCreateNFT(new BatchCreateNFTReq([]));
+
+# BatchCreateNFTRes 批量发行NFT成功返回对象
+# operation_id:				操作ID
+$nfts = new BatchCreateNFTRes($res->getData());
+```
+
+#### 3.2.6 批量转让NFT
+
+```php
+# BatchTransferNFT 批量转让NFT对象参数, 类型为数组
+# owner:						NFT 持有者地址, 必填参数
+# data:							转让的NFT和接收者, 数组, 必填参数
+# operation_id:						操作 ID, 必填参数
+# tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->nfts->BatchTransferNFT(new BatchTransferNFTReq([
+    "owner"  => "<NFT 持有者地址>",
+    "operation_id" => "<操作 ID>",
+    "data" => [
+        [
+            [
+                "nfts" => [
+                    "class_id" => "<class_id 类别ID>",
+                    "nft_id" => "<转让的NFT-ID>"
+                ],
+                "recipient" => "<接收者地址>"
+            ]
+        ]
+    ]
+]));
+
+# BatchTransferNFTRes 批量转让NFT成功返回对象
+# operation_id:				操作ID
+$nfts = new BatchTransferNFTRes($res->getData());
+```
+
+#### 3.2.7 批量编辑NFT
+
+```php
+# BatchEditNFTReq 批量编辑NFT对象参数, 类型为数组
+# owner:						NFT 持有者地址, 必填参数
+# nfts:							编辑的NFT信息, 数组, 必填参数
+# nfts->class_id:		NFT 类别 ID, 字符串, 必填参数
+# nfts->nft_id:			NFT ID, 字符串, 必填参数
+# nfts->name:				NFT 名称,字符串, 必填参数
+# nfts->uri:				链外数据链接, 字符串
+# nfts->data:				自定义链上元数据, 字符串
+# operation_id:						操作 ID, 必填参数
+# tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->nfts->BatchEditNFT(new BatchEditNFTReq([
+    "owner"  => "<NFT 持有者地址>",
+    "operation_id" => "<操作 ID>",
+    "nts" => [
+        [
+            "class_id": "<NFT 类别 ID, 字符串, 必填参数>",
+            "nft_id": "<NFT ID, 字符串, 必填参数>",
+            "name": "<NFT 名称,字符串, 必填参数>",
+            "uri": "<链外数据链接, 字符串>",
+            "data": "<自定义链上元数据, 字符串>"
+        ]
+    ]
+]));
+
+# BatchEditNFTRes 批量编辑NFT成功返回对象
+# operation_id:				操作ID
+$nfts = new BatchEditNFTRes($res->getData());
+```
+
+#### 3.2.7 批量销毁NFT
+
+```php
+# BatchDeleteNFTReq 批量销毁NFT对象参数, 类型为数组
+# owner:						NFT 持有者地址, 必填参数
+# nfts:							编辑的NFT信息, 数组, 必填参数
+# nfts->class_id:		NFT 类别 ID, 字符串, 必填参数
+# nfts->nft_id:			NFT ID, 字符串, 必填参数
+# operation_id:						操作 ID, 必填参数
+# tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->nfts->BatchDeleteNFT(new BatchDeleteNFTReq([
+    "owner"  => "<NFT 持有者地址>",
+    "operation_id" => "<操作 ID>",
+    "nts" => [
+        [
+            "class_id": "<NFT 类别 ID, 字符串, 必填参数>",
+            "nft_id": "<NFT ID, 字符串, 必填参数>",
+        ]
+    ]
+]));
+
+# BatchDeleteNFTRes 批量销毁NFT成功返回对象
+# operation_id:				操作ID
+$nfts = new BatchDeleteNFTRes($res->getData());
+```
+
+#### 3.2.8 NFT列表
+
+```php
+# QueryNFTSReq 查询NFT列表参数对象, 类型为数组
+# offset:								游标，默认为 0
+# limit: 								每页记录数，默认为 10，上限为 50
+# id:										NFT 类别 ID
+# name:									NFT 名称，支持模糊查询
+# class_id:							NFT 类别 ID
+# owner:								NFT 权属者地址
+# tx_hash:							创建 NFT 的 Tx Hash
+# status:								NFT 状态：active / burned，默认为 active
+# start_date:						NFT 类别创建日期范围 - 开始，yyyy-MM-dd（UTC 时间）
+# end_date:							NFT 类别创建日期范围 - 结束，yyyy-MM-dd（UTC 时间
+# sort_by:							排序规则：DATE_ASC / DATE_DESC
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->nfts->QueryNFTS(new QueryNFTSReq([
+    "offset" => "0",
+    "limit" => "10",
+]));
+
+# QueryNFTSRes 			查询NFT列表成功参数对象
+# offset:						游标
+# limit:						每页记录数
+# total_count:			总记录数
+# nfts:							NFT列表, 类型为数组
+# nfts->id:					NFT  ID
+# nfts->name:				NFT 名称
+# nfts->class_id:			NFT 类别ID
+# nfts->class_name:			NFT 类别名称
+# nfts->class_symbol:			NFT 类别标识
+# nfts->uri: 			链外数据链接
+# nfts->owner:		NFT 权属者地址
+# nfts->status:		FT 状态：active / burned
+# nfts->tx_hash: 创建 NFT 类别的 Tx Hash
+# nfts->timestamp: 创建 NFT 类别的时间戳（UTC 时间）
+$nfts = new QueryNFTSRes($res->getData());
+```
+
+#### 3.2.9 查询NFT详情
+
+```php
+# QueryNFTReq 					查询NFT详情参数对象
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->nfts->QueryNFT(new QueryNFTReq("<class_id>", "<nft_id>"));
+
+# QueryNFTRes 	查询NFT详情成功参数对象
+# id:					NFT  ID
+# name:				NFT 名称
+# class_id:			NFT 类别ID
+# class_name:			NFT 类别名称
+# class_symbol:			NFT 类别标识
+# uri: 			链外数据链接
+# uri_hash: 			链外数据 Hash
+# data:			自定义链上元数据
+# owner:		NFT 权属者地址
+# status:		FT 状态：active / burned
+# tx_hash: 创建 NFT 类别的 Tx Hash
+# timestamp: 创建 NFT 类别的时间戳（UTC 时间）
+$nft = new QueryNFTRes($res->getData());
+```
+
+#### 3.2.10 查询NFT操作记录
+
+```php
+# QueryNFTHistoryReq  	查询NFT操作记录参数对象
+# class_id:							NFT 类别 ID
+# nft_id:								NFT ID
+# offset:								游标，默认为 0
+# limit: 								每页记录数，默认为 10，上限为 50
+# signer:								Tx 签名者地址
+# tx_hash:							NFT 操作 Tx Hash
+# operation:						操作类型：mint / edit / transfer / burn
+# start_date:						NFT 操作日期范围 - 开始，yyyy-MM-dd（UTC 时间）
+# end_date:							NFT 操作日期范围 - 结束，yyyy-MM-dd（UTC 时间）
+# sort_by:							排序规则：DATE_ASC / DATE_DESC
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+
+$res = $obj->nfts->QueryNFTHistory(new QueryNFTHistoryReq([
+		"class_id"	=> "<NFT 类别 ID>",
+		"nft_id"		=> "<NFT ID>",
+]));
+
+# QueryNFTHistoryRes 查询NFT操作记录返回对象
+# offset:						游标
+# limit:						每页记录数
+# total_count:			总记录数
+# operation_records:							NFT操作记录列表, 类型为数组
+# operation_records->tx_hash:			NFT 操作的 Tx Hash
+# operation_records->operation:		NFT 操作类型 Enum: "mint" "edit" "transfer" "burn"
+# operation_records->signer:			Tx 签名者地址
+# operation_records->recipient:		NFT 接收者地址
+# operation_records->timestamp:		NFT 操作时间戳（UTC 时间）
+$NFTHistorys = new QueryNFTHistoryRes($res->getData());
+```
+
