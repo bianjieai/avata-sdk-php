@@ -5,11 +5,13 @@
  * Date: 2023/1/9
  * Email: <Tianyu@bianjie.ai>
  */
+
 namespace Bianjieai\AvataSdkPhp;
 
 use Bianjieai\AvataSdkPhp\Service\Base;
 use Bianjieai\AvataSdkPhp\Service\Accounts;
 use Bianjieai\AvataSdkPhp\Exception\InvalidArgumentException;
+use Bianjieai\AvataSdkPhp\Service\MT;
 use Bianjieai\AvataSdkPhp\Service\NFT_Classes;
 use Bianjieai\AvataSdkPhp\Service\NFTS;
 use Bianjieai\AvataSdkPhp\Utils\Utils;
@@ -37,6 +39,11 @@ class Client extends Base
     public $nfts;
 
     /**
+     * @var MT MT服务
+     */
+    public $mts;
+
+    /**
      * Client constructor
      */
    public function __construct(array $cfg = [])
@@ -60,6 +67,7 @@ class Client extends Base
        $this->accounts = new Accounts();
        $this->nft_classes = new NFT_Classes();
        $this->nfts = new NFTS();
+       $this->mts = new MT();
        parent::__construct();
    }
 }

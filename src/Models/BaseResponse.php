@@ -36,6 +36,7 @@ class BaseResponse
      * @var HttpRes http返回的状态码和信息
      */
     private $http;
+
     /**
      * BaseResponse constructor.
      * @param int $code
@@ -55,7 +56,7 @@ class BaseResponse
     /**
      * @return int 获取状态码
      */
-    public function getCode() :int
+    public function getCode(): int
     {
         return $this->code;
     }
@@ -63,7 +64,7 @@ class BaseResponse
     /**
      * @return string 获取提示信息
      */
-    public function getMessage() :string
+    public function getMessage(): string
     {
         return $this->message;
     }
@@ -82,7 +83,7 @@ class BaseResponse
     /**
      * @return ExceptionRes 获取异常信息
      */
-    public function getError() :ExceptionRes
+    public function getError(): ExceptionRes
     {
         if (is_null($this->error)) {
             return new ExceptionRes();
@@ -93,7 +94,7 @@ class BaseResponse
     /**
      * @return HttpRes 获取 http 信息
      */
-    public function getHttp() :HttpRes
+    public function getHttp(): HttpRes
     {
         if (is_null($this->http)) {
             return new HttpRes();
@@ -114,7 +115,8 @@ class BaseResponse
      *
      * @param $data
      */
-    public function setData($data) {
+    public function setData($data)
+    {
         $this->data = $data;
     }
 

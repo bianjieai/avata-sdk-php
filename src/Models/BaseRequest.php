@@ -28,7 +28,7 @@ class BaseRequest
     /**
      * @return string
      */
-    public function getOperationIDKey() :string
+    public function getOperationIDKey(): string
     {
         return "operation_id";
     }

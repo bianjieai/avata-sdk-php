@@ -35,7 +35,7 @@ class HttpRes
     /**
      * @return int 获取Code
      */
-    public function getCode() :int
+    public function getCode(): int
     {
         return $this->code;
     }
@@ -43,7 +43,7 @@ class HttpRes
     /**
      * @return string 获取Message
      */
-    public function getMessage() :string
+    public function getMessage(): string
     {
         return $this->message;
     }
