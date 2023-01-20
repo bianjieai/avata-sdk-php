@@ -78,6 +78,54 @@ final class Utils
     }
 
     /**
+     * PATCH 请求
+     *
+     * @param string $path
+     * @param array $body
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public static function HttpPatch(string $path, array $body)
+    {
+        $timestamp = self::getMillisecond();
+        $signature = self::signature(self::ROUTER_PREFIX.$path, $timestamp, [], $body);
+        $res = self::$client->patch(self::$domain. $path, [
+            "headers" => [
+                "X-Api-Key"     => self::$apiKey,
+                "X-Timestamp"   => $timestamp,
+                "X-Signature"   => $signature,
+                "Content-Type"  => "application/json",
+            ],
+            "json" => $body,
+        ]);
+        return $res;
+    }
+
+    /**
+     * Delete 请求
+     *
+     * @param string $path
+     * @param array $body
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public static function HttpDelete(string $path, array $body)
+    {
+        $timestamp = self::getMillisecond();
+        $signature = self::signature(self::ROUTER_PREFIX.$path, $timestamp, [], $body);
+        $res = self::$client->delete(self::$domain. $path, [
+            "headers" => [
+                "X-Api-Key"     => self::$apiKey,
+                "X-Timestamp"   => $timestamp,
+                "X-Signature"   => $signature,
+                "Content-Type"  => "application/json",
+            ],
+            "json" => $body,
+        ]);
+        return $res;
+    }
+
+    /**
      * GET 请求
      *
      * @param string $path
@@ -97,52 +145,6 @@ final class Utils
                 "Content-Type" => "application/json",
             ],
             "query" => $query
-        ]);
-        return $res;
-    }
-
-    /**
-     * PATCH 请求
-     *
-     * @param string $path
-     * @param array $body
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public static function HttpPatch(string $path, array $body)
-    {
-        $timestamp = self::getMillisecond();
-        $signature = self::signature(self::ROUTER_PREFIX . $path, $timestamp, [], $body);
-        $res = self::$client->patch(self::$domain . $path, [
-            "headers" => [
-                "X-Api-Key" => self::$apiKey,
-                "X-Timestamp" => $timestamp,
-                "X-Signature" => $signature,
-                "Content-Type" => "application/json",
-            ],
-            "json" => $body,
-        ]);
-        return $res;
-    }
-
-    /**
-     * PATCH 请求
-     *
-     * @param string $path
-     * @param array $body
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public static function HttpDelete(string $path, array $body)
-    {
-        $timestamp = self::getMillisecond();
-        $signature = self::signature(self::ROUTER_PREFIX . $path, $timestamp, [], $body);
-        $res = self::$client->delete(self::$domain . $path, [
-            "headers" => [
-                "X-Api-Key" => self::$apiKey,
-                "X-Timestamp" => $timestamp,
-                "X-Signature" => $signature,
-                "Content-Type" => "application/json",
-            ],
-            "json" => $body,
         ]);
         return $res;
     }
