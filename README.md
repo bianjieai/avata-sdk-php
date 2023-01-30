@@ -621,6 +621,390 @@ $res = $obj->nfts->QueryNFTHistory(new QueryNFTHistoryReq([
 $NFTHistorys = new QueryNFTHistoryRes($res->getData());
 ```
 
+## 4.MT 接口
+
+### 4.1 类别接口
+
+#### 4.1.1 创建 MT 类别
+
+```php
+# CreateMTClassReq 创建 MT 类别参数对象,类型为数组
+# name:								MT 类别名称, 必填字段
+# owner:							MT 类别权属者地址，支持任一 Avata 平台内合法链账户地址, 必填字段
+# data:								自定义链上元数据
+# tag:							    交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, ["key" => "value"]
+# operation_id:				        操作ID, 必填字段
+
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->mts->CreateMTClass(new CreateMTClassReq([
+	"name" => "<MT 类别名称>",
+	"owner" => "<MT 类别权属者地址>",
+	"operation_id" => "<操作 ID>"
+	]));
+
+# CreateMTClassRes 创建MT类别交易成功返回参数对象
+# operation_id: 操作ID
+$class = new CreateMTClassRes($res->getData());
+```
+
+#### 4.1.2 查询类别列表
+
+```php
+# QueryMTClasses 查询 MT 类别列表参数对象, 类型为数组
+# offset:								游标，默认为 0
+# limit: 								每页记录数，默认为 10，上限为 50
+# id:									MT 类别 ID
+# name:									MT 类别名称，支持模糊查询
+# owner:								MT 类别权属者地址
+# tx_hash:							创建 MT 类别的 Tx Hash
+# start_date:						MT 类别创建日期范围 - 开始，yyyy-MM-dd（UTC 时间）
+# end_date:							MT 类别创建日期范围 - 结束，yyyy-MM-dd（UTC 时间
+# sort_by:							排序规则：DATE_ASC / DATE_DESC
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->mts->QueryMTClasses(new QueryMTClassesReq([
+    "offset" => "0",
+    "limit" => "10",
+]));
+
+# QueryMTClassesRes 查询NFT类别列表成功参数对象
+# offset:						游标
+# limit:						每页记录数
+# total_count:			总记录数
+# classes:					类别列表, 类型为数组
+# classes->id:			MT 类别 ID
+# classes->name:		MT 类别名称
+# classes->mt_count: 	MT 类别包含的 MT 总量(AVATA 平台内)
+# classes->owner:		MT 类别权属者地址
+# classes->tx_hash: 	创建 MT 类别的 Tx Hash
+# classes->timestamp: 	创建 MT 类别的时间戳（UTC 时间）
+$classes = new QueryMTClassesRes($res->getData());
+```
+
+#### 4.1.3 查询类别详情
+
+```php
+# QueryMTClass 查询类别详情对象
+# id:		MT 类别 ID 必填
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->mts->QueryMTClass(new QueryMTClassReq("<id>"));
+
+# QueryMTClassRes 查询类别详情返回对象
+# id:								MT 类别 ID
+# name:							MT 类别名称
+# mt_count:				MT 类别包含的 NFT 总量
+# data:							自定义链上元数据
+# owner:						MT 类别权属者地址
+# tx_hash:					创建 MT 类别的 Tx Hash
+# timestamp:				创建 MT 类别的时间戳（UTC 时间）
+$classes = new QueryMTClassRes($res->getData());
+```
+
+#### 4.1.4 转让类别
+
+```php
+# TransferMTClassReq 转让类别对象, 类型为数组
+# class_id:					MT 类别 ID,需要转让的类别ID, 必填字段
+# owner:					MT 类别权属者地址, 当前类别的权属者, 必填字段
+
+# recipient:				MT 类别接收者地址，支持任一 Avata 平台内合法链账户地址, 必填字段
+# operation_id:				操作 ID, 必填字段
+# tag:						交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, ["key" => "value"]
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->mts->TransferMTClass( "<class_id>","<owner>",new TransferMTClassReq([
+    "recipient"=>"<recipient>",
+    "operation_id"=>"<operation_id>"
+]));
+
+# TransferMTClassRes 转让类别返回的对象
+# operation_id:				操作ID
+$class = new TransferMTClassRes($res->getData());
+```
+
+### 4.2 MT 接口
+
+#### 4.2.1 发行MT
+
+```php
+# IssueMTReq 发行 MT 对象参数, 类型为数组
+# data:									自定义链上元数据
+# amount:								MT 数量，不填写数量时，默认发行数量为 1
+# recipient:							NFT 接收者地址，支持任一文昌链合法链账户地址，默认为 NFT 类别的权属者地址，不填写该参数，默认该NFT接收者为类别的拥有者
+# tag: 										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
+# operation_id:						操作ID, 必填参数
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->mts->IssueMT(new IssueMTReq([
+    "operation_id" => "<操作ID>",
+]));
+
+# IssueMTRes 发行MT成功返回对象
+# operation_id:				操作ID
+$mt = new IssueMTRes($res->getData());
+```
+
+#### 4.2.2 增发MT
+
+```php
+# MintMTReq 增发 MT 对象参数, 类型为数组
+# class_id:								MT 类别 ID, 必填参数
+# mt_id:								MT ID, 必填参数
+
+# amount:								MT 名称, 必填参数
+# recipient:							MT 接收者地址
+# tag: 									交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
+# operation_id:							操作ID, 必填参数
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->mts->MintMT("<MT 类别 ID>","<MT ID>",new MintMTReq([
+    "operation_id" => "<操作 ID>",
+]));
+
+# MintMTRes 增发 MT 成功返回对象
+# operation_id:				操作ID
+$mt = new MintMTRes($res->getData());
+```
+
+#### 4.2.3 转让MT
+
+```php
+# TransferMTReq 转让 MT 对象参数, 类型为数组
+# class_id:								MT 类别 ID, 必填参数
+# owner:								MT 持有者地址, 必填参数
+# mt_id:								MT ID, 必填参数
+
+# amount:								转移的数量（默认为 1 ）
+# recipient:							接收者地址, 必填参数
+# operation_id:							操作 ID, 必填参数
+# tag:									交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->mts->TransferMT("<MT 类别 ID>","<MT 持有者地址>","<MT ID>",new TransferMTReq([
+    "operation_id" => "<操作 ID>",
+    "recipient" => "<MT 接收者地址>",
+]));
+
+# TransferMTRes	转让 MT 成功返回对象
+# operation_id:				操作ID
+$mt = new TransferMTRes($res->getData());
+```
+
+#### 4.2.4 编辑MT
+
+```php
+# EditMTReq 编辑 MT 对象参数, 类型为数组
+# class_id:									MT 类别 ID, 必填参数
+# owner:									MT 类别权属者地址, 必填参数
+# mt_id:									MT ID, 必填参数
+
+# data:										自定义链上元数据,必填参数
+# operation_id:								操作 ID, 必填参数
+# tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->mts->EditNFT("<MT 类别 ID>","<MT 类别权属者地址>","<MT ID>", new EditNFTReq([
+    "operation_id" => "<操作 ID>",
+    "data" => "<自定义链上元数据>",
+]));
+
+# EditMTRes	编辑NFT成功返回对象
+# operation_id:				操作ID
+$mt = new EditMTRes($res->getData());
+```
+
+#### 4.2.5 销毁MT
+
+```php
+# BurnMTReq 销毁 MT 对象参数, 类型为数组
+# class_id:									MT 类别 ID, 必填参数
+# owner:									MT 持有者地址, 必填参数
+# mt_id:									MT ID, 必填参数
+
+# amount:								 	销毁的数量
+# operation_id:								操作 ID, 必填参数
+# tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->mts->BurnNFT("<MT 类别 ID>","<MT 持有者地址>","<MT ID>", new BurnMTReq([
+    "operation_id" => "<操作 ID>",
+]));
+
+# BurnMTRes	销毁 MT 成功返回对象
+# operation_id:				操作ID
+$mt = new BurnMTRes($res->getData());
+```
+
+#### 4.2.6 查询MT列表
+
+```php
+# QueryMTsReq 查询 MT 列表参数对象, 类型为数组
+# offset:								游标，默认为 0
+# limit: 								每页记录数，默认为 10，上限为 50
+# id:									MT ID
+# name:									MT 名称，支持模糊查询
+# class_id:								MT 类别 ID
+# owner:								MT 发行者地址
+# tx_hash:							    创建 MT 的 Tx Hash
+# start_date:							MT 类别创建日期范围 - 开始，yyyy-MM-dd（UTC 时间）
+# end_date:								MT 类别创建日期范围 - 结束，yyyy-MM-dd（UTC 时间
+# sort_by:								排序规则：DATE_ASC / DATE_DESC
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->mts->QueryMTs(new QueryMTsReq([
+    "offset" => "0",
+    "limit" => "10",
+]));
+
+# QueryMTsRes 			查询 MT 列表成功参数对象
+# offset:						游标
+# limit:						每页记录数
+# total_count:					总记录数
+# mts:							MT 列表, 类型为数组
+# mts->id:					MT  ID
+# mts->class_id:			MT 类别ID
+# mts->class_name:			MT 类别名称
+# mts->issuer:				首次发行该 MT 的链账户地址
+# mts->owner_count:			MT 拥有者数量(AVATA 平台内)
+# mts->timestamp: 			MT 首次发行时间戳（UTC 时间）
+$mts = new QueryMTsRes($res->getData());
+```
+
+#### 4.2.7 查询MT详情
+
+```php
+# QueryMTReq 					查询 MT 详情参数对象
+# class_id:									MT 类别 ID, 必填参数
+# mt_id:									MT ID, 必填参数
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+$res = $obj->mts->QueryMT(new QueryMTReq("<class_id>", "<mt_id>"));
+
+# QueryMTRes 	查询 MT 详情成功参数对象
+# id:					MT  ID
+# class_id:				MT 类别ID
+# class_name:			MT 类别名称
+# data:					自定义链上元数据
+# owner_count:		    MT 拥有者数量(AVATA 平台内)
+# issue_data:			首次发行该 MT 的链账户地址、发行时间、首发数量、首发交易哈希
+# mt_count: 			MT 流通总量(全链)
+# timestamp: 			MT 发行次数(AVATA 平台内累计发行次数(包括首次发行和增发))
+$mt = new QueryNFTRes($res->getData());
+```
+
+#### 4.2.8 查询MT操作记录
+
+```php
+# QueryMTHistoryReq  	查询 MT 操作记录参数对象
+# class_id:							MT 类别 ID
+# mt_id:							MT ID
+
+# offset:							游标，默认为 0
+# limit: 							每页记录数，默认为 10，上限为 50
+# signer:							Tx 签名者地址
+# tx_hash:							MT 操作 Tx Hash
+# operation:						操作类型： issue(首发MT) / mint(增发MT) / edit(编辑MT) / transfer(转让MT) / burn(销毁MT)
+# start_date:						MT 操作日期范围 - 开始，yyyy-MM-dd（UTC 时间）
+# end_date:							MT 操作日期范围 - 结束，yyyy-MM-dd（UTC 时间）
+# sort_by:							排序规则：DATE_ASC / DATE_DESC
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+
+$res = $obj->mts->QueryMTHistory("<MT 类别 ID>","<MT ID>",new QueryMTHistoryReq([]));
+
+# QueryMTHistoryRes 查询 MT 操作记录返回对象
+# offset:						游标
+# limit:						每页记录数
+# total_count:					总记录数
+# operation_records:			MT 操作记录列表, 类型为数组
+# operation_records->tx_hash:			MT 操作的 Tx Hash
+# operation_records->operation:			MT 操作类型 Enum: "issue" "mint" "edit" "transfer" "burn"
+# operation_records->signer:			Tx 签名者地址
+# operation_records->recipient:			MT 接收者地址
+# operation_records->amount:			MT 操作数量
+# operation_records->timestamp:			MT 操作时间戳（UTC 时间）
+$MTHistorys = new QueryMTHistoryRes($res->getData());
+```
+
+#### 4.2.9 查询MT余额
+
+```php
+# QueryMTBalanceReq  	查询 MT 余额参数对象
+# class_id:							MT 类别 ID
+# account:							链账户地址
+
+# offset:								游标，默认为 0
+# limit: 								每页记录数，默认为 10，上限为 50
+# id:							 		MT ID
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+
+$res = $obj->mts->QueryMTBalance("<MT 类别 ID>","<链账户地址>",new QueryMTBalanceReq([]));
+
+# QueryMTBalanceRes 查询 MT 余额返回对象
+# offset:						游标
+# limit:						每页记录数
+# total_count:					总记录数
+# mts:						
+# mts->tx_hash:			MT ID
+# mts->operation:		MT 数量
+$mtBalance = new QueryMTBalanceRes($res->getData());
+```
+
 ## 5.充值接口
 
 ### 5.1 购买能量值/业务费
