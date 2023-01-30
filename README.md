@@ -726,7 +726,7 @@ $order = new QueryOrderRes($res->getData());
 # $res->getError: 获取异常信息
 # $res->getHttp: 获取http异常信息
 
-$res = $obj->orders->BatchCreateOrder(new \Bianjieai\AvataSdkPhp\Models\Orders\BatchCreateOrderReq([
+$res = $obj->orders->BatchCreateOrder(new BatchCreateOrderReq([
     "list"      => [
         [
             "account"   =>  "<链账户地址>",
