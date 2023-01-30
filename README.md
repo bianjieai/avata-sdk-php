@@ -1,5 +1,7 @@
 # 一、介绍
 
+
+
 # 二、例子
 
 ## 1. 初始化客户端
@@ -1001,5 +1003,125 @@ $res = $obj->mts->QueryMTBalance("<MT 类别 ID>","<链账户地址>",new QueryM
 # mts->tx_hash:			MT ID
 # mts->operation:		MT 数量
 $mtBalance = new QueryMTBalanceRes($res->getData());
+```
+
+## 5.充值接口
+
+### 5.1 购买能量值/业务费
+
+```php
+# CreateOrdersReq					购买能量值和业务费参数对象
+# account:									链账户地址, 必填参数
+# amount:									购买金额 ，只能购买整数元金额；单位：分, 必填参数
+# order_type:							充值类型：gas：能量值；business：业务费, 必填参数
+# order_id:								自定义订单流水号，必需且仅包含数字、下划线及英文字母大/小写
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+
+$res = $obj->orders->CreateOrder(new CreateOrdersReq([
+		"account"	=> "<链账户地址>",
+		"amount"	=> "<购买金额>",
+		"order_type"				=> "<充值类型>",
+		"order_id"	=> "<自定义订单流水号>"
+]));
+
+# CreateOrdersRes 					购买能量值和业务费返回对象
+# order_id:									交易流水号（用户发起交易时传入的交易流水号)
+$order = new CreateOrdersRes($res->getData());
+```
+
+### 5.2 查询能量值/业务费购买结果列表
+
+```php
+# QueryOrdersReq  			查询能量值/业务费列表参数对象
+# offset:								游标，默认为 0
+# limit: 								每页记录数，默认为 10，上限为 50
+# status:								订单状态：success 充值成功 / failed 充值失败 / pending 正在充值
+# start_date:						充值订单创建日期范围 - 开始，yyyy-MM-dd（UTC 时间）
+# end_date:							充值订单创建日期范围 - 结束，yyyy-MM-dd（UTC 时间）
+# sort_by:							排序规则：DATE_ASC / DATE_DESC, 默认为 DATE_DESC
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+
+$res = $obj->orders->QueryOrders(new QueryOrdersReq([]));
+
+# QueryOrdersRes 		查询能量值/业务费列表返回对象
+# offset:						游标
+# limit:						每页记录数
+# total_count:			总记录数
+# order_infos:			查询能量值/业务费记录列表, 类型为数组
+# order_infos->order_id:		订单流水号
+# order_infos->status:			订单状态，success 充值成功 / failed 充值失败 / pending 正在充值
+# order_infos->message:			提示信息
+# order_infos->account:			链账户地址, 调用「批量购买能量值」接口不展示此字段
+# order_infos->amount:			充值金额，为整数元金额；单位：分, 调用「批量购买能量值」接口不展示此字段
+# order_infos->number:			充值的数量，充值 gas 该值单位为 ugas，充值业务费单位为分, 调用「批量购买能量值」接口不展示此字段
+# order_infos->create_time:		创建时间（UTC 时间）
+# order_infos->update_time:		最后操作时间（UTC 时间）
+# order_infos->order_type:		订单类型，gas / business
+$orders = new QueryOrdersRes($res->getData());
+```
+
+### 5.3 查询能量值/业务费购买结果
+
+```php
+# QueryOrderReq  				查询能量值/业务费参数对象
+# order_id:							需要查询的订单流水号	
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+
+$res = $obj->orders->QueryOrder(new QueryOrderReq("<需要查询的订单流水号>"));
+
+# QueryOrderRes 		查询能量值/业务费返回对象
+# order_id:			订单流水号
+# status:				订单状态，success 充值成功 / failed 充值失败 / pending 正在充值
+# message:			提示信息
+# account:			链账户地址, 调用「批量购买能量值」接口不展示此字段
+# amount:				充值金额，为整数元金额；单位：分, 调用「批量购买能量值」接口不展示此字段
+# number:				充值的数量，充值 gas 该值单位为 ugas，充值业务费单位为分, 调用「批量购买能量值」接口不展示此字段
+# create_time:	创建时间（UTC 时间）
+# update_time:	最后操作时间（UTC 时间）
+# order_type:		订单类型，gas / business
+$order = new QueryOrderRes($res->getData());
+```
+
+### 5.4 批量购买能量值
+
+```php
+# BatchCreateOrderReq					批量购买能量值参数对象
+# list:												充值信息,二维数组, 必填参数
+# order_id:										自定义订单流水号，必需且仅包含数字、下划线及英文字母大/小写, 必填参数
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+
+$res = $obj->orders->BatchCreateOrder(new BatchCreateOrderReq([
+    "list"      => [
+        [
+            "account"   =>  "<链账户地址>",
+            "amount"    =>  <购买金额 ，只能购买整数元金额；单位：分>,
+        ],
+    ],
+    "order_id"  => "<自定义订单流水号，必需且仅包含数字、下划线及英文字母大/小写>",
+]));
+
+# BatchCreateOrderRes					批量购买能量值返回对象
+# order_id:										交易流水号（用户发起交易时传入的交易流水号)
+$order = new BatchCreateOrderRes($res->getData());
 ```
 

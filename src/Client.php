@@ -14,6 +14,7 @@ use Bianjieai\AvataSdkPhp\Exception\InvalidArgumentException;
 use Bianjieai\AvataSdkPhp\Service\MT;
 use Bianjieai\AvataSdkPhp\Service\NFT_Classes;
 use Bianjieai\AvataSdkPhp\Service\NFTS;
+use Bianjieai\AvataSdkPhp\Service\Orders;
 use Bianjieai\AvataSdkPhp\Utils\Utils;
 
 class Client extends Base
@@ -44,6 +45,10 @@ class Client extends Base
     public $mts;
 
     /**
+     * @var Orders 充值服务
+     */
+    public $orders;
+    /**
      * Client constructor
      */
    public function __construct(array $cfg = [])
@@ -68,6 +73,7 @@ class Client extends Base
        $this->nft_classes = new NFT_Classes();
        $this->nfts = new NFTS();
        $this->mts = new MT();
+       $this->orders = new Orders();
        parent::__construct();
    }
 }
