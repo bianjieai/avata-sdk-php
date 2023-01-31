@@ -2,23 +2,22 @@
 /**
  *
  * User: yu
- * Date: 2023/1/19
+ * Date: 2023/1/31
  * Email: <Tianyu@bianjie.ai>
  */
 
-namespace Bianjieai\AvataSdkPhp\Models\NFTS;
+namespace Bianjieai\AvataSdkPhp\Models\Record;
 
 
-class CreateNFTRes
+class CreateRecordRes
 {
     /**
-     * 操作ID
-     * @var string
+     * @var string 操作ID
      */
     public $operation_id = "";
 
     /**
-     * CreateNFTRes constructor.
+     * CreateRecordRes constructor.
      * @param array $data
      */
     public function __construct(array $data = [])

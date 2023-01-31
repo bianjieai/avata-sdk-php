@@ -31,7 +31,7 @@ final class Accounts extends Base
      * @param CreateAccountsReq $request
      * @return BaseResponse
      */
-    public function CreateAccount(CreateAccountsReq $request): BaseResponse
+    public function CreateAccount(CreateAccountsReq $request) :BaseResponse
     {
         if ($request->name == "") {
             return new BaseResponse(BaseResponse::$code_error, "name is required");

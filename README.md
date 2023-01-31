@@ -1125,3 +1125,99 @@ $res = $obj->orders->BatchCreateOrder(new BatchCreateOrderReq([
 $order = new BatchCreateOrderRes($res->getData());
 ```
 
+## 6.链上存证服务
+
+### 6.1 数字作品存证接口
+
+```php
+# CreateRecordReq								数字作品存证参数对象
+# identity_type:								存证主体；1:个人；2:企业
+# identity_name:								个人姓名或企业名称，规范如下：
+#																个人姓名：长度限制 1-16 个字符（UTF-8 编码），首字符不能是特殊符号；
+# 															企业名称：长度限制 1-50 个字符（UTF-8 编码），首字符不能是特殊符号；
+# 															未传入存证主体字段时，不支持此字段；传入存证主体字段时，此字段必填
+# identity_num:									个人为身份证号码，企业为统一社会信用代码,未传入存证主体字段时，不支持此字段；传入存证主体字段时，此字段选填
+# type:													作品类型, 参数值具体见SDK注释或接口文档字段定义,必填字段
+# name:													作品名称, 必填字段
+# description:									作品描述, 必填字段
+# hash:													作品哈希；将单个作品源文件使用单向散列函数（如 MD5，SHA 等）进行一次 Hash 计算；将多个作品源文件分别进行一次 Hash 计算，再将得到的 Hash 值进行二次 Hash 计算, 必填字段
+#	hash_type:										作品哈希类型 1:其它； 2:SHA256；3:MD5；4:SHA256-PFV, 必填字段
+# operation_id:									操作 ID，保证幂等性，避免重复请求，保证对于同一操作发起的一次请求或者多次请求的结果是一致的；由接入方生成的、针对每个 Project ID 唯一的、不超过 64 个大小写字母、数字、-、下划线的字符串, 必填字段
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+
+$res = $obj->records->CreateRecord(new CreateRecordReq([]));
+
+# CreateRecordRes							数字作品存在返回对象
+# operation_id:								操作ID
+$record = new CreateRecordRes($res->getData());
+```
+
+## 7.交易结果查询接口
+
+### 7.1 上链交易结果查询
+
+```php
+# QueryTxReq					上链交易结果查询对象
+# operation_id:				操作 ID, 创建交易时使用的操作id, 用于查询交易状态, 必填参数
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+
+$res = $obj->txs->QueryTx(new QueryTxReq("<operation_id>"));
+
+# QueryTxRes							上链交易结果查询返回对象
+# type:										用户操作类型, 参数值请查询接口文档或SDK注释
+# module:									交易模块, nft,mt,record
+# tx_hash:								交易哈希
+# status:									交易状态， 0 处理中； 1 成功； 2 失败； 3 未处理；
+#													交易状态说明：
+#													status 为 3（未处理），上链请求还在等待处理，请稍等；
+#													status 为 0（处理中），上链请求正在处理，请等待处理完成；
+#													status 为 1（成功），交易已上链并执行成功；
+#													status 为 2（失败），说明该交易执行失败。请在业务侧做容错处理。可以参考接口返回的 message（交易失败#													的错误描述信息） 对 NFT / MT / 业务接口的请求参数做适当调整后，使用「新的 Operation ID 」重新发起 NFT / MT / 业务接口请求
+# message:								交易失败的错误描述信息
+# block_height:						交易上链的区块高度
+#	timestamp:							交易上链时间（UTC 时间）
+# tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字
+#	nft:										对应不同操作类型的消息体
+# mt:											对应不同操作类型的消息体
+# record:									对应不同操作类型的消息体
+$tx = new QueryTxRes($res->getData());
+```
+
+
+
+### 7.2 上链交易排队状态查询
+
+```php
+# QueryTxQueueReq								上链交易排队状态查询对象
+# operation_id:									操作 ID, 创建交易时使用的操作id, 非必填参数
+
+# $res
+# $res->getData: 获取返回值
+# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
+# $res->getError: 获取异常信息
+# $res->getHttp: 获取http异常信息
+
+$res = $obj->txs->QueryTxQueue(new QueryTxQueueReq("<operation_id>"));
+
+# QueryTxQueueRes							上链交易排队状态查询返回对象
+# queue_total:								当前队列中待处理交易总数
+# queue_request_time:					当前队列即将被处理交易的请求时间（UTC 时间）
+# queue_cost_time:						当前队列中所有交易处理完预估时间（秒）
+# tx_queue_position:					Operation ID 对应交易所处队列中的位置；若交易存在队列中，0 则表示正在重试
+# tx_request_time:						Operation ID 对应交易的请求时间（UTC 时间）
+# tx_cost_time:								Operation ID 对应交易预估处理所需时间（秒）
+# tx_message:									Operation ID 对应交易排队描述信息
+
+$tx = new QueryTxQueueRes($res->getData());
+```
+
