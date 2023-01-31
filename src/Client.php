@@ -15,6 +15,8 @@ use Bianjieai\AvataSdkPhp\Service\MT;
 use Bianjieai\AvataSdkPhp\Service\NFT_Classes;
 use Bianjieai\AvataSdkPhp\Service\NFTS;
 use Bianjieai\AvataSdkPhp\Service\Orders;
+use Bianjieai\AvataSdkPhp\Service\Record;
+use Bianjieai\AvataSdkPhp\Service\Tx;
 use Bianjieai\AvataSdkPhp\Utils\Utils;
 
 class Client extends Base
@@ -48,6 +50,16 @@ class Client extends Base
      * @var Orders 充值服务
      */
     public $orders;
+
+    /**
+     * @var Record 链上存证服务
+     */
+    public $records;
+
+    /**
+     * @var Tx 交易结果查询
+     */
+    public $txs;
     /**
      * Client constructor
      */
@@ -74,6 +86,8 @@ class Client extends Base
        $this->nfts = new NFTS();
        $this->mts = new MT();
        $this->orders = new Orders();
+       $this->records = new Record();
+       $this->txs = new Tx();
        parent::__construct();
    }
 }
