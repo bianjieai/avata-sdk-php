@@ -8,9 +8,9 @@
 
 namespace Bianjieai\AvataSdkPhp;
 
+use Bianjieai\AvataSdkPhp\Exception\Exception;
 use Bianjieai\AvataSdkPhp\Service\Base;
 use Bianjieai\AvataSdkPhp\Service\Accounts;
-use Bianjieai\AvataSdkPhp\Exception\InvalidArgumentException;
 use Bianjieai\AvataSdkPhp\Service\MT;
 use Bianjieai\AvataSdkPhp\Service\NFT_Classes;
 use Bianjieai\AvataSdkPhp\Service\NFTS;
@@ -66,16 +66,16 @@ class Client extends Base
    public function __construct(array $cfg = [])
    {
        if (empty($cfg)) {
-           throw new InvalidArgumentException("please set the configuration items");
+           throw new Exception("please set the configuration items");
        }
        if (!isset($cfg["api_key"]) || $cfg["api_key"] == "") {
-           throw new InvalidArgumentException("the api key for the project is required");
+           throw new Exception("the api key for the project is required");
        }
        if (!isset($cfg["api_secret"]) || $cfg["api_secret"] == "") {
-           throw new InvalidArgumentException("the api secret for the project is required");
+           throw new Exception("the api secret for the project is required");
        }
        if (!isset($cfg["domain"]) || $cfg["domain"] == "") {
-           throw new InvalidArgumentException("the avata domain address needs to be configured");
+           throw new Exception("the avata domain address needs to be configured");
        }
        if (!isset($cfg["http_timeout"]) || $cfg["http_timeout"] == "") {
            $cfg["http_timeout"] = self::HTTP_TIMEOUT;

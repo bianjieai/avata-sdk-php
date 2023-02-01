@@ -9,11 +9,11 @@
 namespace Bianjieai\AvataSdkPhp\Service;
 
 
-use Bianjieai\AvataSdkPhp\Models\BaseResponse;
-use Bianjieai\AvataSdkPhp\Models\ExceptionRes;
-use Bianjieai\AvataSdkPhp\Models\HttpRes;
+use Bianjieai\AvataSdkPhp\Exception\Exception;
 use Bianjieai\AvataSdkPhp\Models\Tx\QueryTxQueueReq;
+use Bianjieai\AvataSdkPhp\Models\Tx\QueryTxQueueRes;
 use Bianjieai\AvataSdkPhp\Models\Tx\QueryTxReq;
+use Bianjieai\AvataSdkPhp\Models\Tx\QueryTxRes;
 use Bianjieai\AvataSdkPhp\Utils\Utils;
 
 class Tx
@@ -32,21 +32,21 @@ class Tx
      * 使用「新的 Operation ID 」重新发起 NFT / MT / 业务接口请求。
      *
      * @param QueryTxReq $request
-     * @return BaseResponse
+     * @return QueryTxRes
+     * @throws Exception
      */
-    public function QueryTx(QueryTxReq $request) :BaseResponse
+    public function QueryTx(QueryTxReq $request): QueryTxRes
     {
         if ($request->operation_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "operation_id is required");
+            throw new Exception("operation_id is required");
         }
         try {
             $tx = Utils::HttpGet(sprintf("/tx/%s", $request->operation_id), []);
         }catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
         $data = Utils::formatBody($tx);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($tx->getStatusCode(), ""));
-        return $response;
+        return new QueryTxRes($data["data"]);
     }
 
     /**
@@ -56,19 +56,19 @@ class Tx
      * 也可以指定 Operation ID 来查询对应交易的排队状态
      *
      * @param QueryTxQueueReq $request
-     * @return BaseResponse
+     * @return QueryTxQueueRes
+     * @throws Exception
      */
-    public function QueryTxQueue(QueryTxQueueReq $request) :BaseResponse
+    public function QueryTxQueue(QueryTxQueueReq $request): QueryTxQueueRes
     {
         try {
             $tx = Utils::HttpPost("/tx/queue/info", [
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         }catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
         $data = Utils::formatBody($tx);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($tx->getStatusCode(), ""));
-        return $response;
+        return new QueryTxQueueRes($data["data"]);
     }
 }
