@@ -61,7 +61,6 @@ final class MT extends Base
                 $request->getNameKey() => $request->name,
                 $request->getOwnerKey() => $request->owner,
                 $request->getDataKey() => $request->data,
-                $request->getTagKey() => $request->tag,
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
@@ -96,7 +95,6 @@ final class MT extends Base
         try {
             $result = Utils::HttpPost(sprintf("/mt/class-transfers/%s/%s", $classID, $owner), [
                 $request->getRecipientKey() => $request->recipient,
-                $request->getTagKey() => $request->tag,
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
@@ -172,7 +170,6 @@ final class MT extends Base
                 $request->getRecipientKey() => $request->recipient,
                 $request->getAmountKey() => $request->amount,
                 $request->getDataKey() => $request->data,
-                $request->getTagKey() => $request->tag,
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
@@ -206,7 +203,6 @@ final class MT extends Base
             $result = Utils::HttpPost(sprintf("/mt/mt-mints/%s/%s", $classID, $mtID), [
                 $request->getRecipientKey() => $request->recipient,
                 $request->getAmountKey() => $request->amount,
-                $request->getTagKey() => $request->tag,
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
@@ -242,7 +238,6 @@ final class MT extends Base
             $result = Utils::HttpPost(sprintf("/mt/mt-transfers/%s/%s/%s", $classID, $owner, $mtID), [
                 $request->getRecipientKey() => $request->recipient,
                 $request->getAmountKey() => $request->amount,
-                $request->getTagKey() => $request->tag,
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
@@ -277,7 +272,6 @@ final class MT extends Base
         try {
             $result = Utils::HttpPatch(sprintf("/mt/mts/%s/%s/%s", $classID, $owner, $mtID), [
                 $request->getDataKey() => $request->data,
-                $request->getTagKey() => $request->tag,
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
@@ -310,7 +304,6 @@ final class MT extends Base
         try {
             $result = Utils::HttpDelete(sprintf("/mt/mts/%s/%s/%s", $classID, $owner, $mtID), [
                 $request->getAmountKey() => $request->amount,
-                $request->getTagKey() => $request->tag,
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
