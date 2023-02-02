@@ -72,12 +72,6 @@ class QueryTxRes
      * @var string 交易上链时间（UTC 时间）
      */
     public $timestamp = "";
-
-    /**
-     * @var array 交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字
-     */
-    public $tag = [];
-
     /**
      * @var array 对应不同操作类型的消息体, 参考接口文档
      */

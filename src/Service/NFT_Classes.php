@@ -126,9 +126,6 @@ class NFT_Classes extends Base
                 $request->getRecipientKey() => $request->recipient,
                 $request->getOperationIDKey() => $request->operation_id,
             ];
-            if (count($request->tag) > 1) {
-                $body[$request->getTagKey()] = $request->tag;
-            }
             $classes = Utils::HttpPost(sprintf("/nft/class-transfers/%s/%s", $request->class_id, $request->owner), $body);
         } catch (\Throwable $throwable) {
             throw Utils::HandleException($throwable);
