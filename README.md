@@ -1,5 +1,25 @@
 # 一、介绍
 
+**边界智能旗下为对接Avata服务提供的PHP版本的SDK**
+
+```php
+# 异常处理
+use \Bianjieai\AvataSdkPhp\Exception\Exception;
+
+try {
+  ......
+} catch (Exception $exception) {
+  # 获取Code
+  $exception->getCode();
+  # 获取CodeSpace
+  $exception->getCodeSpace();
+  # 获取异常信息
+  $exception->getMessage();
+  # 异常处理业务流程
+  ......
+}
+```
+
 
 
 # 二、例子
@@ -14,7 +34,12 @@ $cfg = [
     "domain" => "请求域名, 不同环境对应不同的域名, 如测试环境: https://stage.apis.avata.bianjie.ai",
     "http_timeout" => <请求Avata接口超时时间, 默认: 10>,
 ];
-$obj = new Client($cfg);
+# Exception SDK下定义的异常
+try {
+    $obj = new Client($cfg);
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 ```
 
 ## 2. 链账户接口
@@ -22,25 +47,22 @@ $obj = new Client($cfg);
 ### 2.1 创建单个链账户
 
 ```php
-# 初始化客户端后, 进行接口调用
-
 # CreateAccountsReq 创建链账户的请求参数对象
 # new CreateAccountsReq(<name>, <operation_id>)
 # name: 链账户名称，支持 1-20 位汉字、大小写字母及数字组成的字符串
 # operation_id: 操作 ID，保证幂等性，避免重复请求，保证对于同一操作发起的一次请求或者多次请求的结果是一致的；由接入方生成的针对每个 Project ID 唯一的、不超过 64 个大小写字母、数字、-、下划线的字符串组成。此操作 ID 仅限在查询链账户接口中使用，用于查询创建链账户的授权状态。
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->accounts->CreateAccount(new CreateAccountsReq(<name>, <operation_id>));
+try {
+    $account = $obj->accounts->CreateAccount(new CreateAccountsReq(<name>, <operation_id>));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 
 # CreateAccountsRes 创建链账户成功返回的参数对象
 # account: 链账户地址
 # name: 链账户名称
 # operation_id: 操作 ID。此操作 ID 仅限在查询链账户接口中使用，用于查询创建链账户的授权状态
-$account = new CreateAccountsRes($res->$res->getData());
+$account 是CreateAccountsRes对象
 ```
 
 ### 2.2 批量创建链账户
@@ -51,17 +73,16 @@ $account = new CreateAccountsRes($res->$res->getData());
 # count: 批量创建链账户的数量, 默认: 1
 # operation_id: 操作 ID，保证幂等性，避免重复请求，保证对于同一操作发起的一次请求或者多次请求的结果是一致的；由接入方生成的针对每个 Project ID 唯一的、不超过 64 个大小写字母、数字、-、下划线的字符串组成。此操作 ID 仅限在查询链账户接口中使用，用于查询创建链账户的授权状态。
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->accounts->BatchCreateAccounts(new BatchCreateAccountsReq(<count>, <operation_id>));
+try {
+    $accounts = $obj->accounts->BatchCreateAccounts(new BatchCreateAccountsReq(<count>, <operation_id>));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 
 # BatchCreateAccountsRes 批量创建链账户成功返回的参数对象
 # accounts: 链账户地址列表, 数组
 # operation_id: 操作 ID。此操作 ID 仅限在查询链账户接口中使用，用于查询创建链账户的授权状态
-$accounts = new BatchCreateAccountRes($res->$res->getData());
+$accounts 是BatchCreateAccountsRes对象
 ```
 
 ### 2.3 查询链账户
@@ -78,15 +99,15 @@ $accounts = new BatchCreateAccountRes($res->$res->getData());
 # sort_by:			排序规则：DATE_ASC / DATE_DESC
 # 以上参数类型都为String, 如写入其他类型，可能会导致签名参数验证不通过
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->accounts->QueryAccounts(new QueryAccountsReq([
-    "offset" =>     "0",
-    "limit" =>      "10",
-]));
+
+try {
+    $accounts = $obj->accounts->QueryAccounts(new QueryAccountsReq([
+        "offset" =>     "0",
+        "limit" =>      "10",
+			]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 
 # QueryAccountsRes 查询链账户成功返回的参数对象
 # offset:						游标
@@ -99,7 +120,7 @@ $res = $obj->accounts->QueryAccounts(new QueryAccountsReq([
 # accounts->biz_fee: 文昌链 DDC 业务费余额，单位：分
 # accounts->operation_id: 操作 ID
 # accounts->status: 链账户的授权状态，0 未授权；1 已授权。链账户授权成功后，可使用该链账户地址发起上链交易请求；未授权时不影响作为交易的接受者地址进行使用（DDC 业务除外）
-$accounts = new QueryAccountsRes($res->$res->getData());
+$accounts 是QueryAccountsRes对象
 ```
 
 ### 2.4 查询链账户操作记录
@@ -119,15 +140,14 @@ $accounts = new QueryAccountsRes($res->$res->getData());
 # sort_by:							排序规则：DATE_ASC / DATE_DESC
 # 以上参数类型都为String, 如写入其他类型，可能会导致签名参数验证不通过
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->accounts->QueryAccountsHistory(new QueryAccountsHistoryReq([
-    "offset" =>     "0",
-    "limit" =>      "10",
-]));
+try {
+    $accountsHistory = $obj->accounts->QueryAccountsHistory(new QueryAccountsHistoryReq([
+            "offset" =>     "0",
+            "limit" =>      "10",
+			]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 
 # QueryAccountsHistoryRes 查询链账户操作记录成功返回的参数对象
 # offset:						游标
@@ -145,7 +165,7 @@ $res = $obj->accounts->QueryAccountsHistory(new QueryAccountsHistoryReq([
 # operation_records->nft_msg: 对应不同操作类型的消息体,下方的Key只作为展示用, 实际返回中不存在该Key, 只返回对应数据
 # operation_records->mt_msg: 对应不同操作类型的消息体,下方的Key只作为展示用, 实际返回中不存在该Key, 只返回对应数据
 # 以上message, nft_msg, mt_msg具体参数可参考文档
-$accountsHistory = new QueryAccountsHistoryRes($res->$res->getData());
+$accountsHistory 是QueryAccountsHistoryRes对象
 ```
 
 ## 3.NFT 接口
@@ -168,20 +188,19 @@ $accountsHistory = new QueryAccountsHistoryRes($res->$res->getData());
 # operation_id:				操作ID, 必填字段
 
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->nft_classes->CreateNFTClasses(new CreateNFTClassesReq([
-    "name"  => "PHP-SDK 测试创建类别",
-    "owner"     => "类别拥有者链账户地址",
-    "operation_id" => "<操作ID>"
-]));
+try {
+  $nftClasses = $obj->nft_classes->CreateNFTClasses(new CreateNFTClassesReq([
+      "name"  => "PHP-SDK 测试创建类别",
+      "owner"     => "类别拥有者链账户地址",
+      "operation_id" => "<操作ID>"
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 
 # CreateNFTClassesRes 创建NFT类别交易成功返回参数对象
 # operation_id: 操作ID
-$nftClasses = new CreateNFTClassesRes($res->$res->getData());
+$nftClasses 是CreateNFTClassesRes对象
 ```
 
 #### 3.1.2 查询类别列表
@@ -198,16 +217,14 @@ $nftClasses = new CreateNFTClassesRes($res->$res->getData());
 # end_date:							NFT 类别创建日期范围 - 结束，yyyy-MM-dd（UTC 时间
 # sort_by:							排序规则：DATE_ASC / DATE_DESC
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->nft_classes->QueryNFTClasses(new QueryNFTCLassesReq([
-    "offset" => "0",
-    "limit" => "10",
-]));
-
+try {
+  $classes = $obj->nft_classes->QueryNFTClasses(new QueryNFTCLassesReq([
+      "offset" => "0",
+      "limit" => "10",
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # QueryNFTCLassesRes 查询NFT类别列表成功参数对象
 # offset:						游标
 # limit:						每页记录数
@@ -221,7 +238,7 @@ $res = $obj->nft_classes->QueryNFTClasses(new QueryNFTCLassesReq([
 # classes->owner:		NFT 类别权属者地址
 # classes->tx_hash: 创建 NFT 类别的 Tx Hash
 # classes->timestamp: 创建 NFT 类别的时间戳（UTC 时间）
-$classes = new QueryNFTCLassesRes($res->$res->getData());
+$classes 是QueryNFTCLassesRes对象
 ```
 
 #### 3.1.3 查询类别详情
@@ -230,13 +247,11 @@ $classes = new QueryNFTCLassesRes($res->$res->getData());
 # QueryNFTClass 查询类别详情对象
 # id:		NFT 类别 ID 必填
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->nft_classes->QueryNFTClass(new QueryNFTClassReq("<id>"));
-
+try {
+	$class = $obj->nft_classes->QueryNFTClass(new QueryNFTClassReq("<id>"));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # QueryNFTClassRes 查询类别详情返回对象
 # id:								NFT 类别 ID
 # name:							NFT 类别名称
@@ -249,7 +264,7 @@ $res = $obj->nft_classes->QueryNFTClass(new QueryNFTClassReq("<id>"));
 # owner:						NFT 类别权属者地址
 # tx_hash:					创建 NFT 类别的 Tx Hash
 # timestamp:				创建 NFT 类别的时间戳（UTC 时间）
-$classes = new QueryNFTClassRes($res->$res->getData());
+$class 是QueryNFTClassRes对象
 ```
 
 #### 3.1.4 转让类别
@@ -262,21 +277,19 @@ $classes = new QueryNFTClassRes($res->$res->getData());
 # operation_id:			操作 ID, 必填字段
 # tag:									交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, ["key" => "value"]
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->nft_classes->TransferNFTClass(new TransferNFTClassReq([
-    "class_id"  => "<class_id>",
-    "owner" => "<owner>",
-    "recipient"=>"<recipient>",
-    "operation_id"=>"<operation_id>"
-]));
-
+try {
+  $classes = $obj->nft_classes->TransferNFTClass(new TransferNFTClassReq([
+      "class_id"  => "<class_id>",
+      "owner" => "<owner>",
+      "recipient"=>"<recipient>",
+      "operation_id"=>"<operation_id>"
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # TransferNFTClassRes 转让类别返回的对象
 # operation_id:				操作ID
-$classes = new TransferNFTClassRes($res->$res->getData());
+$classes 是TransferNFTClassRes对象
 ```
 
 ### 3.2 NFT 接口
@@ -294,20 +307,18 @@ $classes = new TransferNFTClassRes($res->$res->getData());
 # tag: 										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
 # operation_id:						操作ID, 必填参数
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->nfts->CreateNFT(new CreateNFTReq([
-    "class_id"  => "<类别ID>",
-    "name"  => "<NFT 名称>",
-    "operation_id" => "<操作ID>",
-]));
-
+try {
+  $nft = $obj->nfts->CreateNFT(new CreateNFTReq([
+      "class_id"  => "<类别ID>",
+      "name"  => "<NFT 名称>",
+      "operation_id" => "<操作ID>",
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # CreateNFTRes 发行NFT成功返回对象
 # operation_id:				操作ID
-$nft = new CreateNFTRes($res->$res->getData());
+$nft 是CreateNFTRes对象
 ```
 
 #### 3.2.2 转让NFT
@@ -321,16 +332,14 @@ $nft = new CreateNFTRes($res->$res->getData());
 # operation_id:						操作 ID, 必填参数
 # tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->nfts->TransferNFT(new TransferNFTReq([]));
-
+try {
+	$nft = $obj->nfts->TransferNFT(new TransferNFTReq([]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # TransferNFTRes	转让NFT成功返回对象
 # operation_id:				操作ID
-$nft = new TransferNFTRes($res->$res->getData());
+$nft 是TransferNFTRes对象
 ```
 
 #### 3.2.3 编辑NFT
@@ -346,16 +355,14 @@ $nft = new TransferNFTRes($res->$res->getData());
 # operation_id:						操作 ID, 必填参数
 # tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->nfts->EditNFT(new EditNFTReq([]));
-
+try {
+	$nft = $obj->nfts->EditNFT(new EditNFTReq([]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # EditNFTRes	编辑NFT成功返回对象
 # operation_id:				操作ID
-$nft = new EditNFTRes($res->$res->getData());
+$nft 是EditNFTRes对象
 ```
 
 #### 3.2.4 销毁NFT
@@ -368,16 +375,14 @@ $nft = new EditNFTRes($res->$res->getData());
 # operation_id:						操作 ID, 必填参数
 # tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->nfts->DeleteNFT(new DeleteNFTReq([]));
-
+try {
+	$nft = $obj->nfts->DeleteNFT(new DeleteNFTReq([]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # DeleteNFTRes	销毁NFT成功返回对象
 # operation_id:				操作ID
-$nft = new DeleteNFTRes($res->$res->getData());
+$nft 是DeleteNFTRes对象
 ```
 
 #### 3.2.5 批量发行NFT
@@ -393,16 +398,14 @@ $nft = new DeleteNFTRes($res->$res->getData());
 # uri_hash:								链外数据 Hash
 # data:										自定义链上元数据
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->nfts->BatchCreateNFT(new BatchCreateNFTReq([]));
-
+try {
+	$nfts = $obj->nfts->BatchCreateNFT(new BatchCreateNFTReq([]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # BatchCreateNFTRes 批量发行NFT成功返回对象
 # operation_id:				操作ID
-$nfts = new BatchCreateNFTRes($res->getData());
+$nfts 是BatchCreateNFTRes对象
 ```
 
 #### 3.2.6 批量转让NFT
@@ -414,30 +417,28 @@ $nfts = new BatchCreateNFTRes($res->getData());
 # operation_id:						操作 ID, 必填参数
 # tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->nfts->BatchTransferNFT(new BatchTransferNFTReq([
-    "owner"  => "<NFT 持有者地址>",
-    "operation_id" => "<操作 ID>",
-    "data" => [
-        [
-            [
-                "nfts" => [
-                    "class_id" => "<class_id 类别ID>",
-                    "nft_id" => "<转让的NFT-ID>"
-                ],
-                "recipient" => "<接收者地址>"
-            ]
-        ]
-    ]
-]));
-
+try {
+  $nfts = $obj->nfts->BatchTransferNFT(new BatchTransferNFTReq([
+      "owner"  => "<NFT 持有者地址>",
+      "operation_id" => "<操作 ID>",
+      "data" => [
+          [
+              [
+                  "nfts" => [
+                      "class_id" => "<class_id 类别ID>",
+                      "nft_id" => "<转让的NFT-ID>"
+                  ],
+                  "recipient" => "<接收者地址>"
+              ]
+          ]
+      ]
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # BatchTransferNFTRes 批量转让NFT成功返回对象
 # operation_id:				操作ID
-$nfts = new BatchTransferNFTRes($res->getData());
+$nfts 是BatchTransferNFTRes对象
 ```
 
 #### 3.2.7 批量编辑NFT
@@ -454,28 +455,26 @@ $nfts = new BatchTransferNFTRes($res->getData());
 # operation_id:						操作 ID, 必填参数
 # tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->nfts->BatchEditNFT(new BatchEditNFTReq([
-    "owner"  => "<NFT 持有者地址>",
-    "operation_id" => "<操作 ID>",
-    "nts" => [
-        [
-            "class_id": "<NFT 类别 ID, 字符串, 必填参数>",
-            "nft_id": "<NFT ID, 字符串, 必填参数>",
-            "name": "<NFT 名称,字符串, 必填参数>",
-            "uri": "<链外数据链接, 字符串>",
-            "data": "<自定义链上元数据, 字符串>"
-        ]
-    ]
-]));
-
+try {
+  $nfts = $obj->nfts->BatchEditNFT(new BatchEditNFTReq([
+      "owner"  => "<NFT 持有者地址>",
+      "operation_id" => "<操作 ID>",
+      "nts" => [
+          [
+              "class_id": "<NFT 类别 ID, 字符串, 必填参数>",
+              "nft_id": "<NFT ID, 字符串, 必填参数>",
+              "name": "<NFT 名称,字符串, 必填参数>",
+              "uri": "<链外数据链接, 字符串>",
+              "data": "<自定义链上元数据, 字符串>"
+          ]
+      ]
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # BatchEditNFTRes 批量编辑NFT成功返回对象
 # operation_id:				操作ID
-$nfts = new BatchEditNFTRes($res->getData());
+$nfts 是BatchEditNFTRes对象
 ```
 
 #### 3.2.7 批量销毁NFT
@@ -489,25 +488,23 @@ $nfts = new BatchEditNFTRes($res->getData());
 # operation_id:						操作 ID, 必填参数
 # tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->nfts->BatchDeleteNFT(new BatchDeleteNFTReq([
-    "owner"  => "<NFT 持有者地址>",
-    "operation_id" => "<操作 ID>",
-    "nts" => [
-        [
-            "class_id": "<NFT 类别 ID, 字符串, 必填参数>",
-            "nft_id": "<NFT ID, 字符串, 必填参数>",
-        ]
-    ]
-]));
-
+try {
+  $nfts = $obj->nfts->BatchDeleteNFT(new BatchDeleteNFTReq([
+      "owner"  => "<NFT 持有者地址>",
+      "operation_id" => "<操作 ID>",
+      "nts" => [
+          [
+              "class_id": "<NFT 类别 ID, 字符串, 必填参数>",
+              "nft_id": "<NFT ID, 字符串, 必填参数>",
+          ]
+      ]
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # BatchDeleteNFTRes 批量销毁NFT成功返回对象
 # operation_id:				操作ID
-$nfts = new BatchDeleteNFTRes($res->getData());
+$nfts 是BatchDeleteNFTRes对象
 ```
 
 #### 3.2.8 NFT列表
@@ -526,16 +523,14 @@ $nfts = new BatchDeleteNFTRes($res->getData());
 # end_date:							NFT 类别创建日期范围 - 结束，yyyy-MM-dd（UTC 时间
 # sort_by:							排序规则：DATE_ASC / DATE_DESC
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->nfts->QueryNFTS(new QueryNFTSReq([
-    "offset" => "0",
-    "limit" => "10",
-]));
-
+try {
+  $nfts = $obj->nfts->QueryNFTS(new QueryNFTSReq([
+      "offset" => "0",
+      "limit" => "10",
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # QueryNFTSRes 			查询NFT列表成功参数对象
 # offset:						游标
 # limit:						每页记录数
@@ -551,21 +546,21 @@ $res = $obj->nfts->QueryNFTS(new QueryNFTSReq([
 # nfts->status:		FT 状态：active / burned
 # nfts->tx_hash: 创建 NFT 类别的 Tx Hash
 # nfts->timestamp: 创建 NFT 类别的时间戳（UTC 时间）
-$nfts = new QueryNFTSRes($res->getData());
+$nfts 是QueryNFTSRes对象
 ```
 
 #### 3.2.9 查询NFT详情
 
 ```php
 # QueryNFTReq 					查询NFT详情参数对象
+# class_id:							类别ID
+# nft_id:								NFT ID
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->nfts->QueryNFT(new QueryNFTReq("<class_id>", "<nft_id>"));
-
+try {
+	$nft = $obj->nfts->QueryNFT(new QueryNFTReq("<class_id>", "<nft_id>"));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # QueryNFTRes 	查询NFT详情成功参数对象
 # id:					NFT  ID
 # name:				NFT 名称
@@ -579,7 +574,7 @@ $res = $obj->nfts->QueryNFT(new QueryNFTReq("<class_id>", "<nft_id>"));
 # status:		FT 状态：active / burned
 # tx_hash: 创建 NFT 类别的 Tx Hash
 # timestamp: 创建 NFT 类别的时间戳（UTC 时间）
-$nft = new QueryNFTRes($res->getData());
+$nft 是QueryNFTRes对象
 ```
 
 #### 3.2.10 查询NFT操作记录
@@ -597,17 +592,14 @@ $nft = new QueryNFTRes($res->getData());
 # end_date:							NFT 操作日期范围 - 结束，yyyy-MM-dd（UTC 时间）
 # sort_by:							排序规则：DATE_ASC / DATE_DESC
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-
-$res = $obj->nfts->QueryNFTHistory(new QueryNFTHistoryReq([
-		"class_id"	=> "<NFT 类别 ID>",
-		"nft_id"		=> "<NFT ID>",
-]));
-
+try{
+  $NFTHistorys = $obj->nfts->QueryNFTHistory(new QueryNFTHistoryReq([
+      "class_id"	=> "<NFT 类别 ID>",
+      "nft_id"		=> "<NFT ID>",
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # QueryNFTHistoryRes 查询NFT操作记录返回对象
 # offset:						游标
 # limit:						每页记录数
@@ -618,7 +610,7 @@ $res = $obj->nfts->QueryNFTHistory(new QueryNFTHistoryReq([
 # operation_records->signer:			Tx 签名者地址
 # operation_records->recipient:		NFT 接收者地址
 # operation_records->timestamp:		NFT 操作时间戳（UTC 时间）
-$NFTHistorys = new QueryNFTHistoryRes($res->getData());
+$NFTHistorys 是QueryNFTHistoryRes对象
 ```
 
 ## 4.MT 接口
@@ -635,21 +627,18 @@ $NFTHistorys = new QueryNFTHistoryRes($res->getData());
 # tag:							    交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, ["key" => "value"]
 # operation_id:				        操作ID, 必填字段
 
-
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->mts->CreateMTClass(new CreateMTClassReq([
-	"name" => "<MT 类别名称>",
-	"owner" => "<MT 类别权属者地址>",
-	"operation_id" => "<操作 ID>"
-	]));
-
+try{
+  $class = $obj->mts->CreateMTClass(new CreateMTClassReq([
+    "name" => "<MT 类别名称>",
+    "owner" => "<MT 类别权属者地址>",
+    "operation_id" => "<操作 ID>"
+    ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # CreateMTClassRes 创建MT类别交易成功返回参数对象
 # operation_id: 操作ID
-$class = new CreateMTClassRes($res->getData());
+$class 是CreateMTClassRes对象
 ```
 
 #### 4.1.2 查询类别列表
@@ -666,16 +655,14 @@ $class = new CreateMTClassRes($res->getData());
 # end_date:							MT 类别创建日期范围 - 结束，yyyy-MM-dd（UTC 时间
 # sort_by:							排序规则：DATE_ASC / DATE_DESC
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->mts->QueryMTClasses(new QueryMTClassesReq([
-    "offset" => "0",
-    "limit" => "10",
-]));
-
+try{
+  $classes = $obj->mts->QueryMTClasses(new QueryMTClassesReq([
+      "offset" => "0",
+      "limit" => "10",
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # QueryMTClassesRes 查询NFT类别列表成功参数对象
 # offset:						游标
 # limit:						每页记录数
@@ -687,7 +674,7 @@ $res = $obj->mts->QueryMTClasses(new QueryMTClassesReq([
 # classes->owner:		MT 类别权属者地址
 # classes->tx_hash: 	创建 MT 类别的 Tx Hash
 # classes->timestamp: 	创建 MT 类别的时间戳（UTC 时间）
-$classes = new QueryMTClassesRes($res->getData());
+$classes 是QueryMTClassesRes对象
 ```
 
 #### 4.1.3 查询类别详情
@@ -696,13 +683,11 @@ $classes = new QueryMTClassesRes($res->getData());
 # QueryMTClass 查询类别详情对象
 # id:		MT 类别 ID 必填
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->mts->QueryMTClass(new QueryMTClassReq("<id>"));
-
+try{
+	$classes = $obj->mts->QueryMTClass(new QueryMTClassReq("<id>"));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # QueryMTClassRes 查询类别详情返回对象
 # id:								MT 类别 ID
 # name:							MT 类别名称
@@ -711,7 +696,7 @@ $res = $obj->mts->QueryMTClass(new QueryMTClassReq("<id>"));
 # owner:						MT 类别权属者地址
 # tx_hash:					创建 MT 类别的 Tx Hash
 # timestamp:				创建 MT 类别的时间戳（UTC 时间）
-$classes = new QueryMTClassRes($res->getData());
+$classes 是QueryMTClassRes对象
 ```
 
 #### 4.1.4 转让类别
@@ -725,19 +710,17 @@ $classes = new QueryMTClassRes($res->getData());
 # operation_id:				操作 ID, 必填字段
 # tag:						交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, ["key" => "value"]
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->mts->TransferMTClass( "<class_id>","<owner>",new TransferMTClassReq([
-    "recipient"=>"<recipient>",
-    "operation_id"=>"<operation_id>"
-]));
-
+try{
+  $class = $obj->mts->TransferMTClass( "<class_id>","<owner>",new TransferMTClassReq([
+      "recipient"=>"<recipient>",
+      "operation_id"=>"<operation_id>"
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # TransferMTClassRes 转让类别返回的对象
 # operation_id:				操作ID
-$class = new TransferMTClassRes($res->getData());
+$class 是TransferMTClassRes对象
 ```
 
 ### 4.2 MT 接口
@@ -752,18 +735,16 @@ $class = new TransferMTClassRes($res->getData());
 # tag: 										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
 # operation_id:						操作ID, 必填参数
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->mts->IssueMT(new IssueMTReq([
-    "operation_id" => "<操作ID>",
-]));
-
+try{
+  $mt = $obj->mts->IssueMT(new IssueMTReq([
+      "operation_id" => "<操作ID>",
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # IssueMTRes 发行MT成功返回对象
 # operation_id:				操作ID
-$mt = new IssueMTRes($res->getData());
+$mt 是IssueMTRes对象
 ```
 
 #### 4.2.2 增发MT
@@ -778,18 +759,16 @@ $mt = new IssueMTRes($res->getData());
 # tag: 									交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
 # operation_id:							操作ID, 必填参数
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->mts->MintMT("<MT 类别 ID>","<MT ID>",new MintMTReq([
-    "operation_id" => "<操作 ID>",
-]));
-
+try{
+  $mt = $obj->mts->MintMT("<MT 类别 ID>","<MT ID>",new MintMTReq([
+      "operation_id" => "<操作 ID>",
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # MintMTRes 增发 MT 成功返回对象
 # operation_id:				操作ID
-$mt = new MintMTRes($res->getData());
+$mt 是MintMTRes对象
 ```
 
 #### 4.2.3 转让MT
@@ -805,19 +784,17 @@ $mt = new MintMTRes($res->getData());
 # operation_id:							操作 ID, 必填参数
 # tag:									交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->mts->TransferMT("<MT 类别 ID>","<MT 持有者地址>","<MT ID>",new TransferMTReq([
-    "operation_id" => "<操作 ID>",
-    "recipient" => "<MT 接收者地址>",
-]));
-
+try{
+  $mt = $obj->mts->TransferMT("<MT 类别 ID>","<MT 持有者地址>","<MT ID>",new TransferMTReq([
+      "operation_id" => "<操作 ID>",
+      "recipient" => "<MT 接收者地址>",
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # TransferMTRes	转让 MT 成功返回对象
 # operation_id:				操作ID
-$mt = new TransferMTRes($res->getData());
+$mt 是TransferMTRes对象
 ```
 
 #### 4.2.4 编辑MT
@@ -832,19 +809,17 @@ $mt = new TransferMTRes($res->getData());
 # operation_id:								操作 ID, 必填参数
 # tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->mts->EditNFT("<MT 类别 ID>","<MT 类别权属者地址>","<MT ID>", new EditNFTReq([
-    "operation_id" => "<操作 ID>",
-    "data" => "<自定义链上元数据>",
-]));
-
+try{
+  $mt = $obj->mts->EditNFT("<MT 类别 ID>","<MT 类别权属者地址>","<MT ID>", new EditNFTReq([
+      "operation_id" => "<操作 ID>",
+      "data" => "<自定义链上元数据>",
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # EditMTRes	编辑NFT成功返回对象
 # operation_id:				操作ID
-$mt = new EditMTRes($res->getData());
+$mt 是EditMTRes对象
 ```
 
 #### 4.2.5 销毁MT
@@ -859,18 +834,16 @@ $mt = new EditMTRes($res->getData());
 # operation_id:								操作 ID, 必填参数
 # tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字, 数组
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->mts->BurnNFT("<MT 类别 ID>","<MT 持有者地址>","<MT ID>", new BurnMTReq([
-    "operation_id" => "<操作 ID>",
-]));
-
+try{
+  $mt = $obj->mts->BurnNFT("<MT 类别 ID>","<MT 持有者地址>","<MT ID>", new BurnMTReq([
+      "operation_id" => "<操作 ID>",
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # BurnMTRes	销毁 MT 成功返回对象
 # operation_id:				操作ID
-$mt = new BurnMTRes($res->getData());
+$mt 是BurnMTRes对象
 ```
 
 #### 4.2.6 查询MT列表
@@ -888,16 +861,14 @@ $mt = new BurnMTRes($res->getData());
 # end_date:								MT 类别创建日期范围 - 结束，yyyy-MM-dd（UTC 时间
 # sort_by:								排序规则：DATE_ASC / DATE_DESC
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->mts->QueryMTs(new QueryMTsReq([
-    "offset" => "0",
-    "limit" => "10",
-]));
-
+try{
+  $mts = $obj->mts->QueryMTs(new QueryMTsReq([
+      "offset" => "0",
+      "limit" => "10",
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # QueryMTsRes 			查询 MT 列表成功参数对象
 # offset:						游标
 # limit:						每页记录数
@@ -909,7 +880,7 @@ $res = $obj->mts->QueryMTs(new QueryMTsReq([
 # mts->issuer:				首次发行该 MT 的链账户地址
 # mts->owner_count:			MT 拥有者数量(AVATA 平台内)
 # mts->timestamp: 			MT 首次发行时间戳（UTC 时间）
-$mts = new QueryMTsRes($res->getData());
+$mts 是QueryMTsRes对象
 ```
 
 #### 4.2.7 查询MT详情
@@ -919,13 +890,11 @@ $mts = new QueryMTsRes($res->getData());
 # class_id:									MT 类别 ID, 必填参数
 # mt_id:									MT ID, 必填参数
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-$res = $obj->mts->QueryMT(new QueryMTReq("<class_id>", "<mt_id>"));
-
+try{
+	$mt = $obj->mts->QueryMT(new QueryMTReq("<class_id>", "<mt_id>"));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # QueryMTRes 	查询 MT 详情成功参数对象
 # id:					MT  ID
 # class_id:				MT 类别ID
@@ -935,7 +904,7 @@ $res = $obj->mts->QueryMT(new QueryMTReq("<class_id>", "<mt_id>"));
 # issue_data:			首次发行该 MT 的链账户地址、发行时间、首发数量、首发交易哈希
 # mt_count: 			MT 流通总量(全链)
 # timestamp: 			MT 发行次数(AVATA 平台内累计发行次数(包括首次发行和增发))
-$mt = new QueryNFTRes($res->getData());
+$mt 是QueryMTRes对象
 ```
 
 #### 4.2.8 查询MT操作记录
@@ -954,14 +923,11 @@ $mt = new QueryNFTRes($res->getData());
 # end_date:							MT 操作日期范围 - 结束，yyyy-MM-dd（UTC 时间）
 # sort_by:							排序规则：DATE_ASC / DATE_DESC
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-
-$res = $obj->mts->QueryMTHistory("<MT 类别 ID>","<MT ID>",new QueryMTHistoryReq([]));
-
+try{
+	$MTHistorys = $obj->mts->QueryMTHistory("<MT 类别 ID>","<MT ID>",new QueryMTHistoryReq([]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # QueryMTHistoryRes 查询 MT 操作记录返回对象
 # offset:						游标
 # limit:						每页记录数
@@ -973,7 +939,7 @@ $res = $obj->mts->QueryMTHistory("<MT 类别 ID>","<MT ID>",new QueryMTHistoryRe
 # operation_records->recipient:			MT 接收者地址
 # operation_records->amount:			MT 操作数量
 # operation_records->timestamp:			MT 操作时间戳（UTC 时间）
-$MTHistorys = new QueryMTHistoryRes($res->getData());
+$MTHistorys 是QueryMTHistoryRes对象
 ```
 
 #### 4.2.9 查询MT余额
@@ -987,14 +953,11 @@ $MTHistorys = new QueryMTHistoryRes($res->getData());
 # limit: 								每页记录数，默认为 10，上限为 50
 # id:							 		MT ID
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-
-$res = $obj->mts->QueryMTBalance("<MT 类别 ID>","<链账户地址>",new QueryMTBalanceReq([]));
-
+try{
+	$mtBalance = $obj->mts->QueryMTBalance("<MT 类别 ID>","<链账户地址>",new QueryMTBalanceReq([]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # QueryMTBalanceRes 查询 MT 余额返回对象
 # offset:						游标
 # limit:						每页记录数
@@ -1002,7 +965,7 @@ $res = $obj->mts->QueryMTBalance("<MT 类别 ID>","<链账户地址>",new QueryM
 # mts:						
 # mts->tx_hash:			MT ID
 # mts->operation:		MT 数量
-$mtBalance = new QueryMTBalanceRes($res->getData());
+$mtBalance 是QueryMTBalanceRes对象
 ```
 
 ## 5.充值接口
@@ -1021,17 +984,19 @@ $mtBalance = new QueryMTBalanceRes($res->getData());
 # $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
 # $res->getError: 获取异常信息
 # $res->getHttp: 获取http异常信息
-
-$res = $obj->orders->CreateOrder(new CreateOrdersReq([
-		"account"	=> "<链账户地址>",
-		"amount"	=> "<购买金额>",
-		"order_type"				=> "<充值类型>",
-		"order_id"	=> "<自定义订单流水号>"
-]));
-
+try{
+  $order = $obj->orders->CreateOrder(new CreateOrdersReq([
+      "account"	=> "<链账户地址>",
+      "amount"	=> "<购买金额>",
+      "order_type"				=> "<充值类型>",
+      "order_id"	=> "<自定义订单流水号>"
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # CreateOrdersRes 					购买能量值和业务费返回对象
 # order_id:									交易流水号（用户发起交易时传入的交易流水号)
-$order = new CreateOrdersRes($res->getData());
+$order 是CreateOrdersRes对象
 ```
 
 ### 5.2 查询能量值/业务费购买结果列表
@@ -1045,14 +1010,11 @@ $order = new CreateOrdersRes($res->getData());
 # end_date:							充值订单创建日期范围 - 结束，yyyy-MM-dd（UTC 时间）
 # sort_by:							排序规则：DATE_ASC / DATE_DESC, 默认为 DATE_DESC
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-
-$res = $obj->orders->QueryOrders(new QueryOrdersReq([]));
-
+try{
+	$orders = $obj->orders->QueryOrders(new QueryOrdersReq([]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # QueryOrdersRes 		查询能量值/业务费列表返回对象
 # offset:						游标
 # limit:						每页记录数
@@ -1067,7 +1029,7 @@ $res = $obj->orders->QueryOrders(new QueryOrdersReq([]));
 # order_infos->create_time:		创建时间（UTC 时间）
 # order_infos->update_time:		最后操作时间（UTC 时间）
 # order_infos->order_type:		订单类型，gas / business
-$orders = new QueryOrdersRes($res->getData());
+$orders 是QueryOrdersRes对象
 ```
 
 ### 5.3 查询能量值/业务费购买结果
@@ -1081,9 +1043,11 @@ $orders = new QueryOrdersRes($res->getData());
 # $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
 # $res->getError: 获取异常信息
 # $res->getHttp: 获取http异常信息
-
-$res = $obj->orders->QueryOrder(new QueryOrderReq("<需要查询的订单流水号>"));
-
+try{
+	$order = $obj->orders->QueryOrder(new QueryOrderReq("<需要查询的订单流水号>"));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # QueryOrderRes 		查询能量值/业务费返回对象
 # order_id:			订单流水号
 # status:				订单状态，success 充值成功 / failed 充值失败 / pending 正在充值
@@ -1094,7 +1058,7 @@ $res = $obj->orders->QueryOrder(new QueryOrderReq("<需要查询的订单流水�
 # create_time:	创建时间（UTC 时间）
 # update_time:	最后操作时间（UTC 时间）
 # order_type:		订单类型，gas / business
-$order = new QueryOrderRes($res->getData());
+$order 是QueryOrderRes对象
 ```
 
 ### 5.4 批量购买能量值
@@ -1104,120 +1068,20 @@ $order = new QueryOrderRes($res->getData());
 # list:												充值信息,二维数组, 必填参数
 # order_id:										自定义订单流水号，必需且仅包含数字、下划线及英文字母大/小写, 必填参数
 
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-
-$res = $obj->orders->BatchCreateOrder(new BatchCreateOrderReq([
-    "list"      => [
-        [
-            "account"   =>  "<链账户地址>",
-            "amount"    =>  <购买金额 ，只能购买整数元金额；单位：分>,
-        ],
-    ],
-    "order_id"  => "<自定义订单流水号，必需且仅包含数字、下划线及英文字母大/小写>",
-]));
-
+try{
+  $order = $obj->orders->BatchCreateOrder(new BatchCreateOrderReq([
+      "list"      => [
+          [
+              "account"   =>  "<链账户地址>",
+              "amount"    =>  <购买金额 ，只能购买整数元金额；单位：分>,
+          ],
+      ],
+      "order_id"  => "<自定义订单流水号，必需且仅包含数字、下划线及英文字母大/小写>",
+  ]));
+} catch (Exception $exception) {
+    // TODO Exception information processing
+}
 # BatchCreateOrderRes					批量购买能量值返回对象
 # order_id:										交易流水号（用户发起交易时传入的交易流水号)
-$order = new BatchCreateOrderRes($res->getData());
+$order 是BatchCreateOrderRes对象
 ```
-
-## 6.链上存证服务
-
-### 6.1 数字作品存证接口
-
-```php
-# CreateRecordReq								数字作品存证参数对象
-# identity_type:								存证主体；1:个人；2:企业
-# identity_name:								个人姓名或企业名称，规范如下：
-#																个人姓名：长度限制 1-16 个字符（UTF-8 编码），首字符不能是特殊符号；
-# 															企业名称：长度限制 1-50 个字符（UTF-8 编码），首字符不能是特殊符号；
-# 															未传入存证主体字段时，不支持此字段；传入存证主体字段时，此字段必填
-# identity_num:									个人为身份证号码，企业为统一社会信用代码,未传入存证主体字段时，不支持此字段；传入存证主体字段时，此字段选填
-# type:													作品类型, 参数值具体见SDK注释或接口文档字段定义,必填字段
-# name:													作品名称, 必填字段
-# description:									作品描述, 必填字段
-# hash:													作品哈希；将单个作品源文件使用单向散列函数（如 MD5，SHA 等）进行一次 Hash 计算；将多个作品源文件分别进行一次 Hash 计算，再将得到的 Hash 值进行二次 Hash 计算, 必填字段
-#	hash_type:										作品哈希类型 1:其它； 2:SHA256；3:MD5；4:SHA256-PFV, 必填字段
-# operation_id:									操作 ID，保证幂等性，避免重复请求，保证对于同一操作发起的一次请求或者多次请求的结果是一致的；由接入方生成的、针对每个 Project ID 唯一的、不超过 64 个大小写字母、数字、-、下划线的字符串, 必填字段
-
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-
-$res = $obj->records->CreateRecord(new CreateRecordReq([]));
-
-# CreateRecordRes							数字作品存在返回对象
-# operation_id:								操作ID
-$record = new CreateRecordRes($res->getData());
-```
-
-## 7.交易结果查询接口
-
-### 7.1 上链交易结果查询
-
-```php
-# QueryTxReq					上链交易结果查询对象
-# operation_id:				操作 ID, 创建交易时使用的操作id, 用于查询交易状态, 必填参数
-
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-
-$res = $obj->txs->QueryTx(new QueryTxReq("<operation_id>"));
-
-# QueryTxRes							上链交易结果查询返回对象
-# type:										用户操作类型, 参数值请查询接口文档或SDK注释
-# module:									交易模块, nft,mt,record
-# tx_hash:								交易哈希
-# status:									交易状态， 0 处理中； 1 成功； 2 失败； 3 未处理；
-#													交易状态说明：
-#													status 为 3（未处理），上链请求还在等待处理，请稍等；
-#													status 为 0（处理中），上链请求正在处理，请等待处理完成；
-#													status 为 1（成功），交易已上链并执行成功；
-#													status 为 2（失败），说明该交易执行失败。请在业务侧做容错处理。可以参考接口返回的 message（交易失败#													的错误描述信息） 对 NFT / MT / 业务接口的请求参数做适当调整后，使用「新的 Operation ID 」重新发起 NFT / MT / 业务接口请求
-# message:								交易失败的错误描述信息
-# block_height:						交易上链的区块高度
-#	timestamp:							交易上链时间（UTC 时间）
-# tag:										交易标签， 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位，自定义 value：长度限制在 64 位字符，支持大小写字母和数字
-#	nft:										对应不同操作类型的消息体
-# mt:											对应不同操作类型的消息体
-# record:									对应不同操作类型的消息体
-$tx = new QueryTxRes($res->getData());
-```
-
-
-
-### 7.2 上链交易排队状态查询
-
-```php
-# QueryTxQueueReq								上链交易排队状态查询对象
-# operation_id:									操作 ID, 创建交易时使用的操作id, 非必填参数
-
-# $res
-# $res->getData: 获取返回值
-# $res->getCode: 获取请求Code, 0: 请求正常 -1: 请求异常
-# $res->getError: 获取异常信息
-# $res->getHttp: 获取http异常信息
-
-$res = $obj->txs->QueryTxQueue(new QueryTxQueueReq("<operation_id>"));
-
-# QueryTxQueueRes							上链交易排队状态查询返回对象
-# queue_total:								当前队列中待处理交易总数
-# queue_request_time:					当前队列即将被处理交易的请求时间（UTC 时间）
-# queue_cost_time:						当前队列中所有交易处理完预估时间（秒）
-# tx_queue_position:					Operation ID 对应交易所处队列中的位置；若交易存在队列中，0 则表示正在重试
-# tx_request_time:						Operation ID 对应交易的请求时间（UTC 时间）
-# tx_cost_time:								Operation ID 对应交易预估处理所需时间（秒）
-# tx_message:									Operation ID 对应交易排队描述信息
-
-$tx = new QueryTxQueueRes($res->getData());
-```
-

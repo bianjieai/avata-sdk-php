@@ -26,7 +26,7 @@ class CreateAccountsReq extends BaseRequest
     public function __construct(string $name, string $operationID)
     {
         $this->name = $name;
-        $this->operationID = $operationID;
+        $this->operation_id = $operationID;
     }
 
     /**

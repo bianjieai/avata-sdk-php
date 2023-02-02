@@ -14,7 +14,7 @@ use GuzzleHttp\Exception\ServerException;
 use Psr\Http\Message\ResponseInterface;
 
 use Bianjieai\AvataSdkPhp\Models\BaseResponse;
-use Bianjieai\AvataSdkPhp\Models\ExceptionRes;
+use Bianjieai\AvataSdkPhp\Exception\Exception;
 use Bianjieai\AvataSdkPhp\Models\HttpRes;
 
 
@@ -228,38 +228,27 @@ final class Utils
     /**
      * 异常处理
      *
-     * @param \Throwable $e
-     * @return BaseResponse
+     * @param \Throwable $throwable
+     * @return Exception
      */
-    public static function exceptionHandle(\Throwable $throwable): BaseResponse
+    public static function HandleException(\Throwable $throwable) :Exception
     {
-        $code = BaseResponse::$code_error;
-        $message = $throwable->getCode() == 0 ? $throwable->getMessage() : "";
-        $error = new ExceptionRes([]);
-        $http = new HttpRes(0, "");
+        $error = new Exception($throwable->getMessage(), Exception::UNKNOWNERROR);
         if ($throwable instanceof ClientException) {
-            $http_code = $throwable->getResponse()->getStatusCode();
-            $http_message = $throwable->getResponse()->getReasonPhrase();
-            $http = new HttpRes($http_code, $http_message);
             if ($throwable->hasResponse()) {
                 $body = $throwable->getResponse()->getBody();
                 $stringBody = (string)$body->getContents();
                 $res = json_decode($stringBody, true);
                 if (is_null($res)) {
-                    $error = new ExceptionRes([
-                        "code" => 404,
-                        "code_space" => "PHP-SDK",
-                        "message" => $res,
-                    ]);
+                    $error = new Exception($res, Exception::UNKNOWNERROR);
                 } else {
-                    $error = new ExceptionRes($res["error"]);
+                    $error = new Exception($res["error"]["message"], $res["error"]["code"], $res["error"]["code_space"]);
                 }
             }
         }
         if ($throwable instanceof ServerException) {
             // TODO
         }
-        $response = new BaseResponse($code, $message, [], $error, $http);
-        return $response;
+        return $error;
     }
 }

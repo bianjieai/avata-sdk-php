@@ -9,13 +9,15 @@
 namespace Bianjieai\AvataSdkPhp\Service;
 
 
-use Bianjieai\AvataSdkPhp\Models\BaseResponse;
 use Bianjieai\AvataSdkPhp\Models\Classes\CreateNFTClassesReq;
+use Bianjieai\AvataSdkPhp\Models\Classes\CreateNFTClassesRes;
 use Bianjieai\AvataSdkPhp\Models\Classes\QueryNFTCLassesReq;
+use Bianjieai\AvataSdkPhp\Models\Classes\QueryNFTCLassesRes;
 use Bianjieai\AvataSdkPhp\Models\Classes\QueryNFTClassReq;
+use Bianjieai\AvataSdkPhp\Models\Classes\QueryNFTClassRes;
 use Bianjieai\AvataSdkPhp\Models\Classes\TransferNFTClassReq;
-use Bianjieai\AvataSdkPhp\Models\ExceptionRes;
-use Bianjieai\AvataSdkPhp\Models\HttpRes;
+use Bianjieai\AvataSdkPhp\Exception\Exception;
+use Bianjieai\AvataSdkPhp\Models\Classes\TransferNFTClassRes;
 use Bianjieai\AvataSdkPhp\Utils\Utils;
 
 class NFT_Classes extends Base
@@ -27,28 +29,28 @@ class NFT_Classes extends Base
      * 所以在发行 NFT 前，都需要创建 NFT 类别，用以声明其抽象属性
      *
      * @param CreateNFTClassesReq $request
-     * @return BaseResponse
+     * @return CreateNFTClassesRes
+     * @throws Exception
      */
-    public function CreateNFTClasses(CreateNFTClassesReq $request): BaseResponse
+    public function CreateNFTClasses(CreateNFTClassesReq $request): CreateNFTClassesRes
     {
         if ($request->name == "") {
-            return new BaseResponse(BaseResponse::$code_error, "name is required");
+            throw new Exception("name is required");
         }
         if ($request->owner == "") {
-            return new BaseResponse(BaseResponse::$code_error, "owner is required");
+            throw new Exception( "owner is required");
         }
         if ($request->operation_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "operation_id is required");
+            throw new Exception( "operation_id is required");
         }
 
         try {
             $classes = Utils::HttpPost("/nft/classes", $request->toArray());
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
         $data = Utils::formatBody($classes);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($classes->getStatusCode(), ""));
-        return $response;
+        return new CreateNFTClassesRes($data["data"]);
     }
 
     /**
@@ -57,18 +59,18 @@ class NFT_Classes extends Base
      * 根据查询条件，展示 Avata 平台内的 NFT 类别列表
      *
      * @param QueryNFTCLassesReq $request
-     * @return BaseResponse
+     * @return QueryNFTCLassesRes
+     * @throws Exception
      */
-    public function QueryNFTClasses(QueryNFTCLassesReq $request): BaseResponse
+    public function QueryNFTClasses(QueryNFTCLassesReq $request): QueryNFTCLassesRes
     {
         try {
             $classes = Utils::HttpGet("/nft/classes", $request->toArray());
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
         $data = Utils::formatBody($classes);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($classes->getStatusCode(), ""));
-        return $response;
+        return new QueryNFTCLassesRes($data["data"]);
     }
 
     /**
@@ -77,21 +79,21 @@ class NFT_Classes extends Base
      * 根据查询条件，展示 Avata 平台内的 NFT 类别的详情信息
      *
      * @param QueryNFTClassReq $request
-     * @return BaseResponse
+     * @return QueryNFTClassRes
+     * @throws Exception
      */
-    public function QueryNFTClass(QueryNFTClassReq $request): BaseResponse
+    public function QueryNFTClass(QueryNFTClassReq $request): QueryNFTClassRes
     {
         if ($request->id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "id is required");
+            throw new Exception("id is required");
         }
         try {
             $classes = Utils::HttpGet(sprintf("/nft/classes/%s", $request->id), []);
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
         $data = Utils::formatBody($classes);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($classes->getStatusCode(), ""));
-        return $response;
+        return new QueryNFTClassRes($data["data"]);
     }
 
     /**
@@ -100,22 +102,24 @@ class NFT_Classes extends Base
      * NFT 类别权属者（NFT Class Owner），拥有在该 NFT 类别中发行 NFT 的权限和转让该 NFT 类别的权限
      * 注意：「Avata」API 服务平台「允许」应用平台方将 NFT 类别转让给「任一 Avata 平台内合法链账户地址」
      *
+     *
      * @param TransferNFTClassReq $request
-     * @return BaseResponse
+     * @return TransferNFTClassRes
+     * @throws Exception
      */
-    public function TransferNFTClass(TransferNFTClassReq $request): BaseResponse
+    public function TransferNFTClass(TransferNFTClassReq $request): TransferNFTClassRes
     {
         if ($request->class_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "class_id is required");
+            throw new Exception( "class_id is required");
         }
         if ($request->owner == "") {
-            return new BaseResponse(BaseResponse::$code_error, "owner is required");
+            throw new Exception("owner is required");
         }
         if ($request->recipient == "") {
-            return new BaseResponse(BaseResponse::$code_error, "recipient is required");
+            throw new Exception( "recipient is required");
         }
         if ($request->operation_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "operation_id is required");
+            throw new Exception( "operation_id is required");
         }
         try {
             $body = [
@@ -127,10 +131,9 @@ class NFT_Classes extends Base
             }
             $classes = Utils::HttpPost(sprintf("/nft/class-transfers/%s/%s", $request->class_id, $request->owner), $body);
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
         $data = Utils::formatBody($classes);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($classes->getStatusCode(), ""));
-        return $response;
+        return new TransferNFTClassRes($data["data"]);
     }
 }
