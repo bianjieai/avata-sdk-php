@@ -29,14 +29,6 @@ class TransferNFTClassReq extends BaseRequest
     public $recipient = "";
 
     /**
-     * @var array 交易标签
-     *
-     * 自定义 key：支持大小写英文字母和汉字和数字，长度 6-12 位
-     * 自定义 value：长度限制在 64 位字符，支持大小写字母和数字
-     */
-    public $tag = [];
-
-    /**
      * TransferNFTClassReq constructor.
      * @param array $data
      */
@@ -54,13 +46,5 @@ class TransferNFTClassReq extends BaseRequest
     public function getRecipientKey(): string
     {
         return "recipient";
-    }
-
-    /**
-     * @return string
-     */
-    public function getTagKey(): string
-    {
-        return "tag";
     }
 }
