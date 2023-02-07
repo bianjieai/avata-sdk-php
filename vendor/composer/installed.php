@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'bianjieai/avata-sdk-php',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => 'cdc49dfccc5ad08d99a01fcf14985fa4b8769341',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '56dfd42c7760b4eea47bf6c29649a082eb8518e8',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'bianjieai/avata-sdk-php' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => 'cdc49dfccc5ad08d99a01fcf14985fa4b8769341',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '56dfd42c7760b4eea47bf6c29649a082eb8518e8',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
