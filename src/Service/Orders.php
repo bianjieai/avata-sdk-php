@@ -9,13 +9,15 @@
 namespace Bianjieai\AvataSdkPhp\Service;
 
 
-use Bianjieai\AvataSdkPhp\Models\BaseResponse;
-use Bianjieai\AvataSdkPhp\Models\ExceptionRes;
-use Bianjieai\AvataSdkPhp\Models\HttpRes;
+use Bianjieai\AvataSdkPhp\Exception\Exception;
 use Bianjieai\AvataSdkPhp\Models\Orders\BatchCreateOrderReq;
+use Bianjieai\AvataSdkPhp\Models\Orders\BatchCreateOrderRes;
 use Bianjieai\AvataSdkPhp\Models\Orders\CreateOrdersReq;
+use Bianjieai\AvataSdkPhp\Models\Orders\CreateOrdersRes;
 use Bianjieai\AvataSdkPhp\Models\Orders\QueryOrderReq;
+use Bianjieai\AvataSdkPhp\Models\Orders\QueryOrderRes;
 use Bianjieai\AvataSdkPhp\Models\Orders\QueryOrdersReq;
+use Bianjieai\AvataSdkPhp\Models\Orders\QueryOrdersRes;
 use Bianjieai\AvataSdkPhp\Utils\Utils;
 
 class Orders extends Base
@@ -27,30 +29,30 @@ class Orders extends Base
      * 如果您是 BSN 文昌链-天舟平台非托管模式项目，可以使用该项目参数，通过此接口进行能量值的购买
      *
      * @param CreateOrdersReq $request
-     * @return BaseResponse
+     * @return CreateOrdersRes
+     * @throws Exception
      */
-    public function CreateOrder(CreateOrdersReq $request) :BaseResponse
+    public function CreateOrder(CreateOrdersReq $request): CreateOrdersRes
     {
         if ($request->account == "") {
-            return new BaseResponse(BaseResponse::$code_error, "account is required");
+            throw new Exception("account is required");
         }
         if ($request->amount == "") {
-            return new BaseResponse(BaseResponse::$code_error, "amount is required");
+            throw new Exception("amount is required");
         }
         if ($request->order_type == "") {
-            return new BaseResponse(BaseResponse::$code_error, "order_type is required");
+            throw new Exception("order_type is required");
         }
         if ($request->order_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "order_type is required");
+            throw new Exception("order_type is required");
         }
         try {
             $orders = Utils::HttpPost("/orders", $request->toArray());
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
         $data = Utils::formatBody($orders);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($orders->getStatusCode(), ""));
-        return $response;
+        return new CreateOrdersRes($data["data"]);
     }
 
     /**
@@ -62,18 +64,18 @@ class Orders extends Base
      * 可以参考接口返回的 message（订单失败的错误描述信息） 对业务接口的请求参数做适当调整后，使用「新的 Order ID 」重新发起业务接口请求
      *
      * @param QueryOrdersReq $request
-     * @return BaseResponse
+     * @return QueryOrdersRes
+     * @throws Exception
      */
-    public function QueryOrders(QueryOrdersReq $request) :BaseResponse
+    public function QueryOrders(QueryOrdersReq $request): QueryOrdersRes
     {
         try {
             $orders = Utils::HttpGet("/orders", $request->toArray());
         }catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
         $data = Utils::formatBody($orders);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($orders->getStatusCode(), ""));
-        return $response;
+        return new QueryOrdersRes($data["data"]);
     }
 
     /**
@@ -85,21 +87,21 @@ class Orders extends Base
      * 可以参考接口返回的 message（订单失败的错误描述信息） 对业务接口的请求参数做适当调整后，使用「新的 Order ID 」重新发起业务接口请求
      *
      * @param QueryOrderReq $request
-     * @return BaseResponse
+     * @return QueryOrderRes
+     * @throws Exception
      */
-    public function QueryOrder(QueryOrderReq $request) :BaseResponse
+    public function QueryOrder(QueryOrderReq $request): QueryOrderRes
     {
         if ($request->order_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "order_id is required");
+            throw new Exception("order_id is required");
         }
         try {
             $order = Utils::HttpGet(sprintf("/orders/%s", $request->order_id), []);
         }catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
         $data = Utils::formatBody($order);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($order->getStatusCode(), ""));
-        return $response;
+        return new QueryOrderRes($data["data"]);
     }
 
     /**
@@ -108,24 +110,24 @@ class Orders extends Base
      * 如果您是 BSN 文昌链-天舟平台非托管模式项目，可以使用该项目参数，通过此接口对多地址进行能量值的批量购买
      *
      * @param BatchCreateOrderReq $request
-     * @return BaseResponse
+     * @return BatchCreateOrderRes
+     * @throws Exception
      */
-    public function BatchCreateOrder(BatchCreateOrderReq $request) :BaseResponse
+    public function BatchCreateOrder(BatchCreateOrderReq $request): BatchCreateOrderRes
     {
         if ($request->order_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "order_id is required");
+            throw new Exception("order_id is required");
         }
         if (count($request->list) < 1) {
-            return new BaseResponse(BaseResponse::$code_error, "list is required");
+            throw new Exception("list is required");
         }
 
         try {
             $order = Utils::HttpPost("/orders/batch", $request->toArray());
         }catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
         $data = Utils::formatBody($order);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($order->getStatusCode(), ""));
-        return $response;
+        return new BatchCreateOrderRes($data["data"]);
     }
 }

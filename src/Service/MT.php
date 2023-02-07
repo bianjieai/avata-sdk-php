@@ -3,19 +3,30 @@
 namespace Bianjieai\AvataSdkPhp\Service;
 
 
-use Bianjieai\AvataSdkPhp\Models\BaseResponse;
-use Bianjieai\AvataSdkPhp\Models\ExceptionRes;
-use Bianjieai\AvataSdkPhp\Models\HttpRes;
+use Bianjieai\AvataSdkPhp\Exception\Exception;
 use Bianjieai\AvataSdkPhp\Models\MTs\BurnMTReq;
+use Bianjieai\AvataSdkPhp\Models\MTs\BurnMTRes;
+use Bianjieai\AvataSdkPhp\Models\MTs\CreateMTClassRes;
 use Bianjieai\AvataSdkPhp\Models\MTs\EditMTReq;
+use Bianjieai\AvataSdkPhp\Models\MTs\EditMTRes;
+use Bianjieai\AvataSdkPhp\Models\MTs\IssueMTRes;
 use Bianjieai\AvataSdkPhp\Models\MTs\MintMTReq;
+use Bianjieai\AvataSdkPhp\Models\MTs\MintMTRes;
 use Bianjieai\AvataSdkPhp\Models\MTs\QueryMTBalanceReq;
+use Bianjieai\AvataSdkPhp\Models\MTs\QueryMTBalanceRes;
 use Bianjieai\AvataSdkPhp\Models\MTs\QueryMTClassesReq;
+use Bianjieai\AvataSdkPhp\Models\MTs\QueryMTClassesRes;
 use Bianjieai\AvataSdkPhp\Models\MTs\QueryMTClassReq;
+use Bianjieai\AvataSdkPhp\Models\MTs\QueryMTClassRes;
 use Bianjieai\AvataSdkPhp\Models\MTs\QueryMTHistoryReq;
+use Bianjieai\AvataSdkPhp\Models\MTs\QueryMTHistoryRes;
 use Bianjieai\AvataSdkPhp\Models\MTs\QueryMTReq;
+use Bianjieai\AvataSdkPhp\Models\MTs\QueryMTRes;
 use Bianjieai\AvataSdkPhp\Models\MTs\QueryMTsReq;
+use Bianjieai\AvataSdkPhp\Models\MTs\QueryMTsRes;
+use Bianjieai\AvataSdkPhp\Models\MTs\TransferMTClassRes;
 use Bianjieai\AvataSdkPhp\Models\MTs\TransferMTReq;
+use Bianjieai\AvataSdkPhp\Models\MTs\TransferMTRes;
 use Bianjieai\AvataSdkPhp\Utils\Utils;
 use Bianjieai\AvataSdkPhp\Models\MTs\CreateMTClassReq;
 use Bianjieai\AvataSdkPhp\Models\MTs\IssueMTReq;
@@ -30,18 +41,19 @@ final class MT extends Base
      * 所以链上资产在发行前，都需要创建 MT 类别，用以声明其抽象属性。
      *
      * @param CreateMTClassReq $request
-     * @return BaseResponse
+     * @return CreateMTClassRes
+     * @throws Exception
      */
-    public function CreateMTClass(CreateMTClassReq $request): BaseResponse
+    public function CreateMTClass(CreateMTClassReq $request): CreateMTClassRes
     {
         if ($request->name == "") {
-            return new BaseResponse(BaseResponse::$code_error, "name is required");
+            throw new Exception("name is required");
         }
         if ($request->owner == "") {
-            return new BaseResponse(BaseResponse::$code_error, "owner is required");
+            throw new Exception("owner is required");
         }
         if ($request->operation_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "operation_id is required");
+            throw new Exception("operation_id is required");
         }
 
         try {
@@ -49,15 +61,14 @@ final class MT extends Base
                 $request->getNameKey() => $request->name,
                 $request->getOwnerKey() => $request->owner,
                 $request->getDataKey() => $request->data,
-                $request->getTagKey() => $request->tag,
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
 
         $data = Utils::formatBody($result);
-        return new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes([]), new HttpRes($result->getStatusCode(), ""));
+        return new CreateMTClassRes($data["data"]);
     }
 
     /**
@@ -69,29 +80,29 @@ final class MT extends Base
      * @param string $classID
      * @param string $owner
      * @param TransferMTClassReq $request
-     * @return BaseResponse
+     * @return TransferMTClassRes
+     * @throws Exception
      */
-    public function TransferMTClass(string $classID, string $owner, TransferMTClassReq $request): BaseResponse
+    public function TransferMTClass(string $classID, string $owner, TransferMTClassReq $request): TransferMTClassRes
     {
         if ($request->recipient == "") {
-            return new BaseResponse(BaseResponse::$code_error, "recipient is required");
+            throw new Exception("recipient is required");
         }
         if ($request->operation_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "operation_id is required");
+            throw new Exception("operation_id is required");
         }
 
         try {
             $result = Utils::HttpPost(sprintf("/mt/class-transfers/%s/%s", $classID, $owner), [
                 $request->getRecipientKey() => $request->recipient,
-                $request->getTagKey() => $request->tag,
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
 
         $data = Utils::formatBody($result);
-        return new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes([]), new HttpRes($result->getStatusCode(), ""));
+        return new TransferMTClassRes($data["data"]);
     }
 
     /**
@@ -100,18 +111,18 @@ final class MT extends Base
      * 根据查询条件，展示 Avata 平台内的 MT 类别列表
      *
      * @param QueryMTClassesReq $request
-     * @return BaseResponse
+     * @return QueryMTClassesRes
+     * @throws Exception
      */
-    public function QueryMTClasses(QueryMTClassesReq $request): BaseResponse
+    public function QueryMTClasses(QueryMTClassesReq $request): QueryMTClassesRes
     {
         try {
             $result = Utils::HttpGet("/mt/classes", $request->toArray());
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
         $data = Utils::formatBody($result);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($result->getStatusCode(), ""));
-        return $response;
+        return new QueryMTClassesRes($data["data"]);
     }
 
     /**
@@ -120,21 +131,21 @@ final class MT extends Base
      * 根据查询条件，展示 Avata 平台内的 MT 类别的详情信息
      *
      * @param QueryMTClassReq $request
-     * @return BaseResponse
+     * @return QueryMTClassRes
+     * @throws Exception
      */
-    public function QueryMTClass(QueryMTClassReq $request): BaseResponse
+    public function QueryMTClass(QueryMTClassReq $request): QueryMTClassRes
     {
         if ($request->id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "id is required");
+           throw new Exception("id is required");
         }
         try {
             $classes = Utils::HttpGet(sprintf("/mt/classes/%s", $request->id), []);
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
         $data = Utils::formatBody($classes);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($classes->getStatusCode(), ""));
-        return $response;
+        return new QueryMTClassRes($data["data"]);
     }
 
 
@@ -145,12 +156,13 @@ final class MT extends Base
      *
      * @param string $classID
      * @param IssueMTReq $request
-     * @return BaseResponse
+     * @return IssueMTRes
+     * @throws Exception
      */
-    public function IssueMT(string $classID, IssueMTReq $request): BaseResponse
+    public function IssueMT(string $classID, IssueMTReq $request): IssueMTRes
     {
         if ($request->operation_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "operation_id is required");
+            throw new Exception("operation_id is required");
         }
 
         try {
@@ -158,15 +170,14 @@ final class MT extends Base
                 $request->getRecipientKey() => $request->recipient,
                 $request->getAmountKey() => $request->amount,
                 $request->getDataKey() => $request->data,
-                $request->getTagKey() => $request->tag,
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
 
         $data = Utils::formatBody($result);
-        return new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes([]), new HttpRes($result->getStatusCode(), ""));
+        return new IssueMTRes($data["data"]);
     }
 
     /**
@@ -179,62 +190,62 @@ final class MT extends Base
      * @param string $classID
      * @param string $mtID
      * @param MintMTReq $request
-     * @return BaseResponse
+     * @return MintMTRes
+     * @throws Exception
      */
-    public function MintMT(string $classID, string $mtID, MintMTReq $request): BaseResponse
+    public function MintMT(string $classID, string $mtID, MintMTReq $request): MintMTRes
     {
         if ($request->operation_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "operation_id is required");
+            throw new Exception("operation_id is required");
         }
 
         try {
             $result = Utils::HttpPost(sprintf("/mt/mt-mints/%s/%s", $classID, $mtID), [
                 $request->getRecipientKey() => $request->recipient,
                 $request->getAmountKey() => $request->amount,
-                $request->getTagKey() => $request->tag,
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
 
         $data = Utils::formatBody($result);
-        return new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes([]), new HttpRes($result->getStatusCode(), ""));
+        return new MintMTRes($data["data"]);
     }
 
     /**
      * 转让 MT
      *
-     * MT 的拥有者可以向指定的链账户地址转移指定数量的 MT，目标转移地址可以是文昌链的任一合法地址。
+     * MT 的拥有者可以向指定的链账户地址转移指定数量的 MT，目标转移地址可以是文昌链的任一合法地址
      *
      * @param string $classID
      * @param string $owner
      * @param string $mtID
      * @param TransferMTReq $request
-     * @return BaseResponse
+     * @return TransferMTRes
+     * @throws Exception
      */
-    public function TransferMT(string $classID, string $owner, string $mtID, TransferMTReq $request): BaseResponse
+    public function TransferMT(string $classID, string $owner, string $mtID, TransferMTReq $request): TransferMTRes
     {
         if ($request->recipient == "") {
-            return new BaseResponse(BaseResponse::$code_error, "recipient is required");
+            throw new Exception("recipient is required");
         }
         if ($request->operation_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "operation_id is required");
+            throw new Exception("operation_id is required");
         }
 
         try {
             $result = Utils::HttpPost(sprintf("/mt/mt-transfers/%s/%s/%s", $classID, $owner, $mtID), [
                 $request->getRecipientKey() => $request->recipient,
                 $request->getAmountKey() => $request->amount,
-                $request->getTagKey() => $request->tag,
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
 
         $data = Utils::formatBody($result);
-        return new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes([]), new HttpRes($result->getStatusCode(), ""));
+        return new TransferMTRes($data["data"]);
     }
 
     /**
@@ -246,29 +257,29 @@ final class MT extends Base
      * @param string $owner
      * @param string $mtID
      * @param EditMTReq $request
-     * @return BaseResponse
+     * @return EditMTRes
+     * @throws Exception
      */
-    public function EditMT(string $classID, string $owner, string $mtID, EditMTReq $request): BaseResponse
+    public function EditMT(string $classID, string $owner, string $mtID, EditMTReq $request): EditMTRes
     {
         if ($request->data == "") {
-            return new BaseResponse(BaseResponse::$code_error, "data is required");
+            throw new Exception("data is required");
         }
         if ($request->operation_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "operation_id is required");
+            throw new Exception("operation_id is required");
         }
 
         try {
             $result = Utils::HttpPatch(sprintf("/mt/mts/%s/%s/%s", $classID, $owner, $mtID), [
                 $request->getDataKey() => $request->data,
-                $request->getTagKey() => $request->tag,
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
 
         $data = Utils::formatBody($result);
-        return new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes([]), new HttpRes($result->getStatusCode(), ""));
+        return new EditMTRes($data["data"]);
     }
 
     /**
@@ -280,27 +291,27 @@ final class MT extends Base
      * @param string $classID
      * @param string $owner
      * @param string $mtID
-     * @param BurnMTReqx $request
-     * @return BaseResponse
+     * @param BurnMTReq $request
+     * @return BurnMTRes
+     * @throws Exception
      */
-    public function BurnMT(string $classID, string $owner, string $mtID, BurnMTReq $request): BaseResponse
+    public function BurnMT(string $classID, string $owner, string $mtID, BurnMTReq $request): BurnMTRes
     {
         if ($request->operation_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "operation_id is required");
+            throw new Exception("operation_id is required");
         }
 
         try {
             $result = Utils::HttpDelete(sprintf("/mt/mts/%s/%s/%s", $classID, $owner, $mtID), [
                 $request->getAmountKey() => $request->amount,
-                $request->getTagKey() => $request->tag,
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
 
         $data = Utils::formatBody($result);
-        return new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes([]), new HttpRes($result->getStatusCode(), ""));
+        return new BurnMTRes($data["data"]);
     }
 
     /**
@@ -309,18 +320,18 @@ final class MT extends Base
      * 根据查询条件，展示 Avata 平台内的 MT 列表
      *
      * @param QueryMTsReq $request
-     * @return BaseResponse
+     * @return QueryMTsRes
+     * @throws Exception
      */
-    public function QueryMTs(QueryMTsReq $request): BaseResponse
+    public function QueryMTs(QueryMTsReq $request): QueryMTsRes
     {
         try {
             $result = Utils::HttpGet("/mt/mts", $request->toArray());
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
         $data = Utils::formatBody($result);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($result->getStatusCode(), ""));
-        return $response;
+        return new QueryMTsRes($data["data"]);
     }
 
     /**
@@ -329,24 +340,24 @@ final class MT extends Base
      * 根据查询条件，展示 Avata 平台内的 MT 类别的详情信息
      *
      * @param QueryMTReq $request
-     * @return BaseResponse
+     * @return QueryMTRes
+     * @throws Exception
      */
-    public function QueryMT(QueryMTReq $request): BaseResponse
+    public function QueryMT(QueryMTReq $request): QueryMTRes
     {
         if ($request->class_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "class_id is required");
+            throw new Exception("class_id is required");
         }
         if ($request->mt_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "mt_id is required");
+            throw new Exception("mt_id is required");
         }
         try {
             $result = Utils::HttpGet(sprintf("/mt/mts/%s/%s", $request->class_id, $request->mt_id), []);
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
         $data = Utils::formatBody($result);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($result->getStatusCode(), ""));
-        return $response;
+        return new QueryMTRes($data["data"]);
     }
 
     /**
@@ -357,25 +368,25 @@ final class MT extends Base
      * @param string $classID
      * @param string $mtID
      * @param QueryMTHistoryReq $request
-     * @return BaseResponse
+     * @return QueryMTHistoryRes
+     * @throws Exception
      */
-    public function QueryMTHistory(string $classID, string $mtID, QueryMTHistoryReq $request): BaseResponse
+    public function QueryMTHistory(string $classID, string $mtID, QueryMTHistoryReq $request): QueryMTHistoryRes
     {
         if ($classID == "") {
-            return new BaseResponse(BaseResponse::$code_error, "class_id is required");
+            throw new Exception("class_id is required");
         }
         if ($mtID == "") {
-            return new BaseResponse(BaseResponse::$code_error, "mt_id is required");
+            throw new Exception("mt_id is required");
         }
         try {
             $result = Utils::HttpGet(sprintf("/mt/mts/%s/%s/history", $classID, $mtID), $request->toArray());
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
 
         $data = Utils::formatBody($result);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($result->getStatusCode(), ""));
-        return $response;
+        return new QueryMTHistoryRes($data["data"]);
     }
 
     /**
@@ -386,24 +397,24 @@ final class MT extends Base
      * @param string $classID
      * @param string $account
      * @param QueryMTBalanceReq $request
-     * @return BaseResponse
+     * @return QueryMTBalanceRes
+     * @throws Exception
      */
-    public function QueryMTBalance(string $classID, string $account, QueryMTBalanceReq $request): BaseResponse
+    public function QueryMTBalance(string $classID, string $account, QueryMTBalanceReq $request): QueryMTBalanceRes
     {
         if ($classID == "") {
-            return new BaseResponse(BaseResponse::$code_error, "class_id is required");
+            throw new Exception("class_id is required");
         }
         if ($account == "") {
-            return new BaseResponse(BaseResponse::$code_error, "account is required");
+            throw new Exception( "account is required");
         }
         try {
             $result = Utils::HttpGet(sprintf("/mt/mts/%s/%s/balances", $classID, $account), $request->toArray());
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
 
         $data = Utils::formatBody($result);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($result->getStatusCode(), ""));
-        return $response;
+        return new QueryMTBalanceRes($data["data"]);
     }
 }

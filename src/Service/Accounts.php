@@ -10,12 +10,14 @@ namespace Bianjieai\AvataSdkPhp\Service;
 
 
 use Bianjieai\AvataSdkPhp\Models\Accounts\BatchCreateAccountsReq;
+use Bianjieai\AvataSdkPhp\Models\Accounts\BatchCreateAccountsRes;
 use Bianjieai\AvataSdkPhp\Models\Accounts\CreateAccountsReq;
+use Bianjieai\AvataSdkPhp\Models\Accounts\CreateAccountsRes;
 use Bianjieai\AvataSdkPhp\Models\Accounts\QueryAccountsHistoryReq;
+use Bianjieai\AvataSdkPhp\Models\Accounts\QueryAccountsHistoryRes;
 use Bianjieai\AvataSdkPhp\Models\Accounts\QueryAccountsReq;
-use Bianjieai\AvataSdkPhp\Models\ExceptionRes;
-use Bianjieai\AvataSdkPhp\Models\BaseResponse;
-use Bianjieai\AvataSdkPhp\Models\HttpRes;
+use Bianjieai\AvataSdkPhp\Exception\Exception;
+use Bianjieai\AvataSdkPhp\Models\Accounts\QueryAccountsRes;
 use Bianjieai\AvataSdkPhp\Utils\Utils;
 
 
@@ -29,15 +31,16 @@ final class Accounts extends Base
      * 建议应用方按照实际会与底层链交互的活跃用户数进行链账户创建。
      *
      * @param CreateAccountsReq $request
-     * @return BaseResponse
+     * @return Exception|CreateAccountsRes
+     * @throws Exception
      */
-    public function CreateAccount(CreateAccountsReq $request) :BaseResponse
+    public function CreateAccount(CreateAccountsReq $request): CreateAccountsRes
     {
         if ($request->name == "") {
-            return new BaseResponse(BaseResponse::$code_error, "name is required");
+            throw new Exception("name is required");
         }
         if ($request->operation_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "operation_id is required");
+            throw new Exception("operation_id is required");
         }
 
         try {
@@ -46,12 +49,10 @@ final class Accounts extends Base
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
-
         $data = Utils::formatBody($account);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes([]), new HttpRes($account->getStatusCode(), ""));
-        return $response;
+        return new CreateAccountsRes($data["data"]);
     }
 
     /**
@@ -62,16 +63,16 @@ final class Accounts extends Base
      * 建议应用方按照实际会与底层链交互的活跃用户数进行链账户创建。
      *
      * @param BatchCreateAccountsReq $request
-     * @return BaseResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return BatchCreateAccountsRes
+     * @throws Exception
      */
-    public function BatchCreateAccounts(BatchCreateAccountsReq $request): BaseResponse
+    public function BatchCreateAccounts(BatchCreateAccountsReq $request): BatchCreateAccountsRes
     {
         if ($request->count == 0) {
             $request->count = 1;
         }
         if ($request->operation_id == "") {
-            return new BaseResponse(BaseResponse::$code_error, "operation_id is required");
+            throw new Exception("operation_id is required");
         }
 
         try {
@@ -80,33 +81,32 @@ final class Accounts extends Base
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
 
         $data = Utils::formatBody($account);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes([]), new HttpRes($account->getStatusCode(), ""));
-        return $response;
+        return new BatchCreateAccountsRes($data["data"]);
     }
 
     /**
-     * 查询链账户
+     *  查询链账户
      *
      * 根据文档中给出的具体的查询条件查询和获取与应用方某一项目 ID 相互绑定的链账户地址
      *
      * @param QueryAccountsReq $request
-     * @return BaseResponse
+     * @return QueryAccountsRes
+     * @throws Exception
      */
-    public function QueryAccounts(QueryAccountsReq $request): BaseResponse
+    public function QueryAccounts(QueryAccountsReq $request): QueryAccountsRes
     {
         try {
             $accounts = Utils::HttpGet("/accounts", $request->toArray());
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
 
         $data = Utils::formatBody($accounts);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($accounts->getStatusCode(), ""));
-        return $response;
+        return new QueryAccountsRes($data["data"]);
     }
 
     /**
@@ -115,18 +115,18 @@ final class Accounts extends Base
      * 查询具体某一个链账户在区块链上的相关操作记录及详情信息
      *
      * @param QueryAccountsHistoryReq $request
-     * @return BaseResponse
+     * @return QueryAccountsHistoryRes
+     * @throws Exception
      */
-    public function QueryAccountsHistory(QueryAccountsHistoryReq $request): BaseResponse
+    public function QueryAccountsHistory(QueryAccountsHistoryReq $request): QueryAccountsHistoryRes
     {
         try {
             $accountsHistory = Utils::HttpGet("/accounts/history", $request->toArray());
         } catch (\Throwable $throwable) {
-            return Utils::exceptionHandle($throwable);
+            throw Utils::HandleException($throwable);
         }
 
         $data = Utils::formatBody($accountsHistory);
-        $response = new BaseResponse(BaseResponse::$code_success, "", $data["data"], new ExceptionRes(), new HttpRes($accountsHistory->getStatusCode(), ""));
-        return $response;
+        return new QueryAccountsHistoryRes($data["data"]);
     }
 }

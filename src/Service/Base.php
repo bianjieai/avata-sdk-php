@@ -8,7 +8,7 @@
 
 namespace Bianjieai\AvataSdkPhp\Service;
 
-use Bianjieai\AvataSdkPhp\Exception\InvalidArgumentException;
+use Bianjieai\AvataSdkPhp\Exception\Exception;
 use GuzzleHttp\Client;
 
 class Base
@@ -21,7 +21,7 @@ class Base
     public function __construct()
     {
         if (is_null(self::$http_client)) {
-            throw new InvalidArgumentException("initialize the client first");
+            throw new Exception("initialize the client first", Exception::CLIENTERROR);
         }
     }
 }
