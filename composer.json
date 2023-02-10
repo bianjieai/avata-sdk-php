@@ -1,23 +1,22 @@
 {
-  "name": "bianjieai/avata-sdk-php",
-  "description": "边界智能旗下为对接Avata服务提供的PHP版本的SDK",
-  "type": "library",
-  "require": {
-    "php": ">=7.0.0",
-    "guzzlehttp/guzzle": "^7.5@dev",
-    "ext-json": "*"
-  },
-  "license": "Apache-2.0",
-  "autoload": {
-    "psr-4": {
-      "Bianjieai\\AvataSdkPhp\\": "src/"
-    }
-  },
-  "authors": [
-    {
-      "name": "上海边界智能科技有限公司",
-      "email": "contact@bianjie.ai"
-    }
-  ],
-  "minimum-stability": "dev"
+    "name": "bianjieai/avata-sdk-php",
+    "description": "边界智能旗下为对接Avata服务提供的PHP版本的SDK",
+    "type": "library",
+    "require": {
+        "php": ">=7.0.0",
+        "guzzlehttp/guzzle": "^7.5@dev"
+    },
+    "license": "Apache-2.0",
+    "autoload": {
+        "psr-4": {
+            "Bianjieai\\AvataSdkPhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "上海边界智能科技有限公司",
+            "email": "contact@bianjie.ai"
+        }
+    ],
+    "minimum-stability": "dev"
 }
