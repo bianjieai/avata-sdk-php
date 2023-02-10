@@ -4,7 +4,8 @@
     "type": "library",
     "require": {
         "php": ">=7.0.0",
-        "guzzlehttp/guzzle": "^7.5@dev"
+        "guzzlehttp/guzzle": "^7.5@dev",
+        "ext-json": "*"
     },
     "license": "Apache-2.0",
     "autoload": {
