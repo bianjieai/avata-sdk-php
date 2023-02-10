@@ -3,7 +3,7 @@
   "description": "边界智能旗下为对接Avata服务提供的PHP版本的SDK",
   "type": "library",
   "require": {
-    "php": "^7.2.5 || ^8.0",
+    "php": ">=7.0.0",
     "guzzlehttp/guzzle": "^7.5@dev",
     "ext-json": "*"
   },

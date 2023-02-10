@@ -3,7 +3,7 @@
         'name' => 'bianjieai/avata-sdk-php',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '56dfd42c7760b4eea47bf6c29649a082eb8518e8',
+        'reference' => '9deec28557a48fc7b74ac5749a975fadb5aaecae',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'bianjieai/avata-sdk-php' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '56dfd42c7760b4eea47bf6c29649a082eb8518e8',
+            'reference' => '9deec28557a48fc7b74ac5749a975fadb5aaecae',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
