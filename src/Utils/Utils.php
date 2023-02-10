@@ -247,7 +247,14 @@ final class Utils
             }
         }
         if ($throwable instanceof ServerException) {
-            // TODO
+            $body = $throwable->getResponse()->getBody();
+            $stringBody = (string)$body->getContents();
+            $res = json_decode($stringBody, true);
+            if (is_null($res)) {
+                $error = new Exception($res, Exception::UNKNOWNERROR);
+            } else {
+                $error = new Exception($res["error"]["message"], $res["error"]["code"], $res["error"]["code_space"]);
+            }
         }
         return $error;
     }
