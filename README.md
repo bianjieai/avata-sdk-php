@@ -3,6 +3,11 @@
 **边界智能旗下为对接Avata服务提供的PHP版本的SDK**
 
 ```php
+# 引用
+composer require bianjieai/avata-sdk-php 
+```
+
+```php
 # 异常处理
 use \Bianjieai\AvataSdkPhp\Exception\Exception;
 
