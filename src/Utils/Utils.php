@@ -240,7 +240,7 @@ final class Utils
                 $stringBody = (string)$body->getContents();
                 $res = json_decode($stringBody, true);
                 if (is_null($res)) {
-                    $error = new Exception($res, Exception::UNKNOWNERROR);
+                    $error = new Exception("unknown error", Exception::UNKNOWNERROR);
                 } else {
                     $error = new Exception($res["error"]["message"], $res["error"]["code"], $res["error"]["code_space"]);
                 }
@@ -251,7 +251,7 @@ final class Utils
             $stringBody = (string)$body->getContents();
             $res = json_decode($stringBody, true);
             if (is_null($res)) {
-                $error = new Exception($res, Exception::UNKNOWNERROR);
+                $error = new Exception("unknown error", Exception::UNKNOWNERROR);
             } else {
                 $error = new Exception($res["error"]["message"], $res["error"]["code"], $res["error"]["code_space"]);
             }

@@ -62,7 +62,7 @@ class Tx
     public function QueryTxQueue(QueryTxQueueReq $request): QueryTxQueueRes
     {
         try {
-            $tx = Utils::HttpPost("/tx/queue/info", [
+            $tx = Utils::HttpGet("/tx/queue/info", [
                 $request->getOperationIDKey() => $request->operation_id,
             ]);
         }catch (\Throwable $throwable) {
