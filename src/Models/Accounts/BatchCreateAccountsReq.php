@@ -26,7 +26,7 @@ class BatchCreateAccountsReq extends BaseRequest
     public function __construct(int $count, string $operationID)
     {
         $this->count = $count;
-        $this->operationID = $operationID;
+        $this->operation_id = $operationID;
     }
 
     /**

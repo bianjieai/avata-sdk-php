@@ -803,7 +803,7 @@ $mt 是TransferMTRes对象
 # operation_id:								操作 ID, 必填参数
 
 try{
-  $mt = $obj->mts->EditNFT("<MT 类别 ID>","<MT 类别权属者地址>","<MT ID>", new EditNFTReq([
+  $mt = $obj->mts->EditMT("<MT 类别 ID>","<MT 类别权属者地址>","<MT ID>", new EditMTReq([
       "operation_id" => "<操作 ID>",
       "data" => "<自定义链上元数据>",
   ]));
@@ -827,7 +827,7 @@ $mt 是EditMTRes对象
 # operation_id:								操作 ID, 必填参数
 
 try{
-  $mt = $obj->mts->BurnNFT("<MT 类别 ID>","<MT 持有者地址>","<MT ID>", new BurnMTReq([
+  $mt = $obj->mts->BurnMT("<MT 类别 ID>","<MT 持有者地址>","<MT ID>", new BurnMTReq([
       "operation_id" => "<操作 ID>",
   ]));
 } catch (Exception $exception) {
