@@ -419,13 +419,14 @@ try {
       "operation_id" => "<操作 ID>",
       "data" => [
           [
-              [
-                  "nfts" => [
+              "nfts" => [
+                  [
                       "class_id" => "<class_id 类别ID>",
                       "nft_id" => "<转让的NFT-ID>"
                   ],
-                  "recipient" => "<接收者地址>"
-              ]
+                  ......
+              ],
+              "recipient" => "<接收者地址>"
           ]
       ]
   ]));
@@ -454,13 +455,13 @@ try {
   $nfts = $obj->nfts->BatchEditNFT(new BatchEditNFTReq([
       "owner"  => "<NFT 持有者地址>",
       "operation_id" => "<操作 ID>",
-      "nts" => [
+      "nfts" => [
           [
-              "class_id": "<NFT 类别 ID, 字符串, 必填参数>",
-              "nft_id": "<NFT ID, 字符串, 必填参数>",
-              "name": "<NFT 名称,字符串, 必填参数>",
-              "uri": "<链外数据链接, 字符串>",
-              "data": "<自定义链上元数据, 字符串>"
+              "class_id"=> "<NFT 类别 ID, 字符串, 必填参数>",
+              "nft_id"=> "<NFT ID, 字符串, 必填参数>",
+              "name"=> "<NFT 名称,字符串, 必填参数>",
+              "uri"=> "<链外数据链接, 字符串>",
+              "data"=> "<自定义链上元数据, 字符串>"
           ]
       ]
   ]));
@@ -486,10 +487,10 @@ try {
   $nfts = $obj->nfts->BatchDeleteNFT(new BatchDeleteNFTReq([
       "owner"  => "<NFT 持有者地址>",
       "operation_id" => "<操作 ID>",
-      "nts" => [
+      "nfts" => [
           [
-              "class_id": "<NFT 类别 ID, 字符串, 必填参数>",
-              "nft_id": "<NFT ID, 字符串, 必填参数>",
+              "class_id"=> "<NFT 类别 ID, 字符串, 必填参数>",
+              "nft_id"=> "<NFT ID, 字符串, 必填参数>"
           ]
       ]
   ]));

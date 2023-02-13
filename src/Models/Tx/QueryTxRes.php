@@ -94,6 +94,9 @@ class QueryTxRes
     public function __construct(array $data)
     {
         foreach($data as $key => $value){
+            if (!isset($this->{$key})) {
+                continue;
+            }
             $this->{$key} = $value;
         }
     }
